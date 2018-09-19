@@ -30,6 +30,8 @@
 #include "strategy.hpp"
 #include "core/logger.hpp"
 #include "table/cleanup.hpp"
+#include <chrono>
+
 
 #include <ndn-cxx/lp/tags.hpp>
 
@@ -81,6 +83,9 @@ Forwarder::~Forwarder() = default;
 void
 Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 {
+   // start the timer on arrival of packet
+    auto t1 = std::chrono::high_resolution_clock::now();
+
   // receive Interest
   NFD_LOG_DEBUG("onIncomingInterest face=" << inFace.getId() <<
                 " interest=" << interest.getName());
@@ -172,7 +177,10 @@ void
 Forwarder::onContentStoreMiss(const Face& inFace, const shared_ptr<pit::Entry>& pitEntry,
                               const Interest& interest)
 {
-  NFD_LOG_DEBUG("onContentStoreMiss interest=" << interest.getName());
+  // stop the timer once entry is not found in CS
+  auto t2 = std::chrono::high_resolution_clock::now();
+  std::chrono::duration <double> diff = t2-t1;
+  NFD_LOG_DEBUG("onContentStoreMiss interest=" << interest.getName() << "onContentStoreMissDiff=" << diff*1000000 );
   ++m_counters.nCsMisses;
 
   // insert in-record
@@ -206,7 +214,12 @@ void
 Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& pitEntry,
                              const Interest& interest, const Data& data)
 {
-  NFD_LOG_DEBUG("onContentStoreHit interest=" << interest.getName());
+  // stop the timer once entry is found in CS
+  auto t2 = std::chrono::high_resolution_clock::now();
+  
+  std::chrono::duration <double> diff = t2-t1;
+
+  NFD_LOG_DEBUG("onContentStoreHit interest=" << interest.getName() << "onContentStoreHitDiff=" << diff*1000000);
   ++m_counters.nCsHits;
 
   data.setTag(make_shared<lp::IncomingFaceIdTag>(face::FACEID_CONTENT_STORE));
@@ -240,6 +253,7 @@ Forwarder::onOutgoingInterest(const shared_ptr<pit::Entry>& pitEntry, Face& outF
 void
 Forwarder::onInterestFinalize(const shared_ptr<pit::Entry>& pitEntry)
 {
+
   NFD_LOG_DEBUG("onInterestFinalize interest=" << pitEntry->getName() <<
                 (pitEntry->isSatisfied ? " satisfied" : " unsatisfied"));
 
