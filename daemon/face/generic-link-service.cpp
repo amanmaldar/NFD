@@ -32,7 +32,8 @@
 namespace nfd {
 namespace face {
 
-NFD_LOG_INIT(GenericLinkService);
+//NFD_LOG_INIT(GenericLinkService);
+NFD_LOG_INIT(TrackLat);
 
 constexpr uint32_t DEFAULT_CONGESTION_THRESHOLD_DIVISOR = 2;
 
@@ -124,6 +125,15 @@ GenericLinkService::doSendNack(const lp::Nack& nack)
 void
 GenericLinkService::encodeLpFields(const ndn::PacketBase& netPkt, lp::Packet& lpPacket)
 {
+   // changes for timestamp
+  shared_ptr<lp::FwdLatencyTag> latencyTag = netPkt.getTag<lp::FwdLatencyTag>();
+  if (latencyTag != nullptr) {
+    lpPacket.add<lp::FwdLatencyTagField>(*latencyTag);
+  }
+  else {
+    lpPacket.add<lp::FwdLatencyTagField>(0);
+  }
+  
   if (m_options.allowLocalFields) {
     shared_ptr<lp::IncomingFaceIdTag> incomingFaceIdTag = netPkt.getTag<lp::IncomingFaceIdTag>();
     if (incomingFaceIdTag != nullptr) {

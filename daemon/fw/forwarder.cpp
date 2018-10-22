@@ -37,7 +37,13 @@
 
 namespace nfd {
 
-NFD_LOG_INIT(Forwarder);
+//NFD_LOG_INIT(Forwarder);
+NFD_LOG_INIT(TrackLat);
+time::milliseconds timestamp = time::toUnixTimestamp(time::system_clock::now());
+auto timeNow = timestamp.count();
+uint64_t fwdDiff;
+uint64_t sentTimeGlobal;
+
 
 static Name
 getDefaultStrategyName()
@@ -83,14 +89,22 @@ Forwarder::~Forwarder() = default;
 void
 Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 {
-   // start the timer on arrival of packet
-    auto t1 = std::chrono::high_resolution_clock::now();
 
   // receive Interest
   NFD_LOG_DEBUG("onIncomingInterest face=" << inFace.getId() <<
                 " interest=" << interest.getName());
   interest.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
   ++m_counters.nInInterests;
+ //_________________________Forwarding Latency__________________________________
+	timestamp = time::toUnixTimestamp(time::system_clock::now());
+	timeNow = timestamp.count();
+	auto sentTime = interest.getTag<lp::FwdLatencyTag>();	
+
+  if (sentTime == nullptr) { 
+	  interest.setTag(make_shared<lp::FwdLatencyTag>(timeNow));
+	  sentTime = interest.getTag<lp::FwdLatencyTag>();	
+  }
+  sentTimeGlobal = *sentTime; // save it globally
 
   // /localhost scope control
   bool isViolatingLocalhost = inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL &&
@@ -177,11 +191,7 @@ void
 Forwarder::onContentStoreMiss(const Face& inFace, const shared_ptr<pit::Entry>& pitEntry,
                               const Interest& interest)
 {
-  // stop the timer once entry is not found in CS
-  auto t2 = std::chrono::high_resolution_clock::now();
-  std::chrono::duration <double> diff = t2-t1;
-  NFD_LOG_DEBUG("onContentStoreMiss interest=" << interest.getName() << "onContentStoreMissDiff=" << diff*1000000 );
-  ++m_counters.nCsMisses;
+	++m_counters.nCsMisses;
 
   // insert in-record
   pitEntry->insertOrUpdateInRecord(const_cast<Face&>(inFace), interest);
@@ -214,13 +224,8 @@ void
 Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& pitEntry,
                              const Interest& interest, const Data& data)
 {
-  // stop the timer once entry is found in CS
-  auto t2 = std::chrono::high_resolution_clock::now();
-  
-  std::chrono::duration <double> diff = t2-t1;
 
-  NFD_LOG_DEBUG("onContentStoreHit interest=" << interest.getName() << "onContentStoreHitDiff=" << diff*1000000);
-  ++m_counters.nCsHits;
+	++m_counters.nCsHits;
 
   data.setTag(make_shared<lp::IncomingFaceIdTag>(face::FACEID_CONTENT_STORE));
   // XXX should we lookup PIT for other Interests that also match csMatch?
@@ -283,6 +288,27 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     return;
   }
 
+  auto fwdLatTag = data.getTag<lp::FwdLatencyTag>();	
+
+  if (fwdLatTag == nullptr) {    // This is producer node. Data is coming from application.
+  // 	time::milliseconds timestamp = time::toUnixTimestamp(time::system_clock::now());
+
+	timestamp = time::toUnixTimestamp(time::system_clock::now());
+	
+	timeNow = timestamp.count();
+
+	fwdDiff = timeNow - sentTimeGlobal;
+	data.setTag(make_shared<lp::FwdLatencyTag>(fwdDiff));	  // not necessary
+	NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName());
+  }
+  
+   if (fwdLatTag != nullptr) {	// This is forwarding router betweeen producer and consumer
+	// Read the tag from incoing data and reattach it to outgoing data
+	fwdDiff = *fwdLatTag;
+	data.setTag(make_shared<lp::LatencyTag>(fwdDiff));
+
+	NFD_LOG_DEBUG("onincomingdata fwd_latency: " << *fwdLatTag << "  " << data.getName());
+  }
   // PIT match
   pit::DataMatchResult pitMatches = m_pit.findAllDataMatches(data);
   if (pitMatches.size() == 0) {
