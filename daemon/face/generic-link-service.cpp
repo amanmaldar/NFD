@@ -354,6 +354,7 @@ GenericLinkService::decodeInterest(const Block& netPkt, const lp::Packet& firstP
   // forwarding expects Interest to be created with make_shared
   auto interest = make_shared<Interest>(netPkt);
 
+// this is tag forwarding feature for interest
  // decode latencyTag
   if (firstPkt.has<lp::FwdLatencyTagField>()) {
     interest->setTag(make_shared<lp::FwdLatencyTag>(firstPkt.get<lp::FwdLatencyTagField>()));
@@ -407,6 +408,7 @@ GenericLinkService::decodeData(const Block& netPkt, const lp::Packet& firstPkt)
 
   // forwarding expects Data to be created with make_shared
   auto data = make_shared<Data>(netPkt);
+	// this is tag forwarding feature for data
    // decode latencyTag
   if (firstPkt.has<lp::FwdLatencyTagField>()) {
     data->setTag(make_shared<lp::FwdLatencyTag>(firstPkt.get<lp::FwdLatencyTagField>()));

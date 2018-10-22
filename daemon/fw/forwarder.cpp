@@ -305,8 +305,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   
    if (fwdLatTag != nullptr) {	// This is forwarding router betweeen producer and consumer
 	// Read the tag from incoing data and reattach it to outgoing data
-	fwdDiff = *fwdLatTag;
-	data.setTag(make_shared<lp::FwdLatencyTag>(fwdDiff));
+	// we dont need to do this. Generic link layer has code to forward tags.
+	//fwdDiff = *fwdLatTag;
+	//data.setTag(make_shared<lp::FwdLatencyTag>(fwdDiff));
 
 	NFD_LOG_DEBUG("onincomingdata fwd_latency: " << *fwdLatTag << "  " << data.getName() << "  " << fwdDiff );
   }
