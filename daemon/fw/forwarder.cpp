@@ -297,8 +297,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	
 	timeNow = timestamp.count();
 
-//	fwdDiff = timeNow - sentTimeGlobal;
-	fwdDiff = 10;
+	fwdDiff = timeNow - sentTimeGlobal;
+	//fwdDiff = 10;
 	data.setTag(make_shared<lp::FwdLatencyTag>(fwdDiff));	  // not necessary
 	NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff);
   }
