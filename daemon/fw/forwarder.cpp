@@ -300,7 +300,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 //	fwdDiff = timeNow - sentTimeGlobal;
 	fwdDiff = 10;
 	data.setTag(make_shared<lp::FwdLatencyTag>(fwdDiff));	  // not necessary
-	NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << fwdDiff);
+	NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff);
   }
   
    if (fwdLatTag != nullptr) {	// This is forwarding router betweeen producer and consumer
@@ -308,7 +308,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	fwdDiff = *fwdLatTag;
 	data.setTag(make_shared<lp::FwdLatencyTag>(fwdDiff));
 
-	NFD_LOG_DEBUG("onincomingdata fwd_latency: " << *fwdLatTag << "  " << data.getName());
+	NFD_LOG_DEBUG("onincomingdata fwd_latency: " << *fwdLatTag << "  " << data.getName() << "  " << fwdDiff );
   }
   // PIT match
   pit::DataMatchResult pitMatches = m_pit.findAllDataMatches(data);
