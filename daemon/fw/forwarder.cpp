@@ -299,7 +299,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	fwdDiff = timeNow - sentTimeGlobal;
 	data.setTag(make_shared<lp::FwdLatencyTag>(fwdDiff));	  // not necessary
-	NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName());
+	NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << *fwdDiff);
   }
   
    if (fwdLatTag != nullptr) {	// This is forwarding router betweeen producer and consumer
