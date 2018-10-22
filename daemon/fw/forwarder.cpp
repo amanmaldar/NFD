@@ -319,6 +319,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     return;
   }
 
+  
+  // remove the tag before inserting data in CS
+  data.removeTag(make_shared<lp::FwdLatencyTag>());
+  
   // CS insert
   m_cs.insert(data);
 
