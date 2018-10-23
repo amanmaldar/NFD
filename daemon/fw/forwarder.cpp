@@ -320,9 +320,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   }
 
   
-  // remove the tag before inserting data in CS
-  data.removeTag<lp::FwdLatencyTag>();
-  
+
   // CS insert
   m_cs.insert(data);
 
@@ -331,7 +329,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     auto& pitEntry = pitMatches.front();
 
     NFD_LOG_DEBUG("onIncomingData matching=" << pitEntry->getName());
-
+	 // remove the tag from data packet in CS
+    data.removeTag<lp::FwdLatencyTag>();
+  
+	
     // set PIT expiry timer to now
     this->setExpiryTimer(pitEntry, 0_ms);
 
