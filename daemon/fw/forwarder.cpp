@@ -330,8 +330,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     auto& pitEntry = pitMatches.front();
 	
 	// checking if we have data stored in pit
-	fwdLatTag = pitEntry->getTag<lp::FwdLatencyTag>();
-	NFD_LOG_DEBUG("onincomingdata pit_Entry: " << *fwdLatTag << "  " << pitEntry->getName() << "  " << fwdDiff );
+	//fwdLatTag = pitEntry->getTag<lp::FwdLatencyTag>();
+	auto int1 = pitEntry->getInterest();
+	fwdLatTag = int1.getTag<lp::FwdLatencyTag>();
+	NFD_LOG_DEBUG("onincomingdata pit_Entry: " << *fwdLatTag << "  " << int1.getName() );
   
 
     NFD_LOG_DEBUG("onIncomingData matching=" << pitEntry->getName());  
