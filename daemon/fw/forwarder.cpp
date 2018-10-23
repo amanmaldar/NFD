@@ -327,8 +327,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   if (pitMatches.size() == 1) {
   
     // checking if we have data stored in pit
-	fwdLatTag = pitEntry->getTag<lp::FwdLatencyTag>();
-	NFD_LOG_DEBUG("onincomingdata pit_Entry: " << *fwdLatTag << "  " << pitEntry->getName() << "  " << fwdDiff );
+	fwdLatTag = pitMatches->getTag<lp::FwdLatencyTag>();
+	NFD_LOG_DEBUG("onincomingdata pit_Entry: " << *fwdLatTag << "  " << pitMatches->getName() << "  " << fwdDiff );
   
     auto& pitEntry = pitMatches.front();
 
