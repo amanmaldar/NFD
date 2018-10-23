@@ -291,7 +291,6 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   auto fwdLatTag = data.getTag<lp::FwdLatencyTag>();	
 
   if (fwdLatTag == nullptr) {    // This is producer node. Data is coming from application.
-  // 	time::milliseconds timestamp = time::toUnixTimestamp(time::system_clock::now());
 
 	timestamp = time::toUnixTimestamp(time::system_clock::now());
 	
@@ -326,12 +325,14 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
   // when only one PIT entry is matched, trigger strategy: after receive Data
   if (pitMatches.size() == 1) {
+  
+    // checking if we have data stored in pit
+	fwdLatTag = pitEntry->getTag<lp::FwdLatencyTag>();
+	NFD_LOG_DEBUG("onincomingdata pit_Entry: " << *fwdLatTag << "  " << pitEntry->getName() << "  " << fwdDiff );
+  
     auto& pitEntry = pitMatches.front();
 
-    NFD_LOG_DEBUG("onIncomingData matching=" << pitEntry->getName());
-	 // remove the tag from data packet in CS
-    data.removeTag<lp::FwdLatencyTag>();
-  
+    NFD_LOG_DEBUG("onIncomingData matching=" << pitEntry->getName());  
 	
     // set PIT expiry timer to now
     this->setExpiryTimer(pitEntry, 0_ms);
