@@ -174,7 +174,7 @@ GenericLinkService::encodeLpFields(const ndn::PacketBase& netPkt, lp::Packet& lp
 	shared_ptr<lp::newDataTag> nDtag = netPkt.getTag<lp::newDataTag>();
   if (tag5 != nullptr & *nDtag == 0 ) { // increment only on interest path.
     lpPacket.add<lp::interestHopsTagField>(*tag5 + 1);
-  }
+  }				
   else {
     lpPacket.add<lp::interestHopsTagField>(0);
   }
@@ -406,9 +406,19 @@ GenericLinkService::decodeInterest(const Block& netPkt, const lp::Packet& firstP
 
 // this is tag forwarding feature for interest
  // decode latencyTag
-  if (firstPkt.has<lp::FwdLatencyTagField>()) {
-    interest->setTag(make_shared<lp::FwdLatencyTag>(firstPkt.get<lp::FwdLatencyTagField>()));
+  if (firstPkt.has<lp::interestHopsTagField>()) {
+    interest->setTag(make_shared<lp::interestHopsTag>(firstPkt.get<lp::interestHopsTagField>()));
   }
+  
+    if (firstPkt.has<lp::interestBirthTagField>()) {
+    interest->setTag(make_shared<lp::interestBirthTag>(firstPkt.get<lp::interestBirthTagField>()));
+  }
+  
+      if (firstPkt.has<lp::interestArrivalTimeTagField>()) {
+    interest->setTag(make_shared<lp::interestArrivalTimeTag>(firstPkt.get<lp::interestArrivalTimeTagField>()));
+  }
+  
+ 
   if (firstPkt.has<lp::NextHopFaceIdField>()) {
     if (m_options.allowLocalFields) {
       interest->setTag(make_shared<lp::NextHopFaceIdTag>(firstPkt.get<lp::NextHopFaceIdField>()));
@@ -460,9 +470,18 @@ GenericLinkService::decodeData(const Block& netPkt, const lp::Packet& firstPkt)
   auto data = make_shared<Data>(netPkt);
 	// this is tag forwarding feature for data
    // decode latencyTag
-  if (firstPkt.has<lp::FwdLatencyTagField>()) {
-    data->setTag(make_shared<lp::FwdLatencyTag>(firstPkt.get<lp::FwdLatencyTagField>()));
+  if (firstPkt.has<lp::fwdLatencyTagField>()) {
+    data->setTag(make_shared<lp::fwdLatencyTag>(firstPkt.get<lp::fwdLatencyTagField>()));
   }
+  
+    if (firstPkt.has<lp::newDataTagField>()) {
+    data->setTag(make_shared<lp::newDataTag>(firstPkt.get<lp::newDataTagField>()));
+  }
+  
+    if (firstPkt.has<lp::interestHopsTagField>()) {
+    data->setTag(make_shared<lp::interestHopsTag>(firstPkt.get<lp::interestHopsTagField>()));
+  }
+
 
   if (firstPkt.has<lp::NackField>()) {
     ++this->nInNetInvalid;
