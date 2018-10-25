@@ -96,15 +96,25 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   interest.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
   ++m_counters.nInInterests;
  //_________________________Forwarding Latency__________________________________
+/*
 	timestamp = time::toUnixTimestamp(time::system_clock::now());
 	timeNow = timestamp.count();
 	auto sentTime = interest.getTag<lp::FwdLatencyTag>();	
 
-  if (sentTime == nullptr) { 
+  if (*sentTime == 0) { 
 	  interest.setTag(make_shared<lp::FwdLatencyTag>(timeNow));
-	  sentTime = interest.getTag<lp::FwdLatencyTag>();	
+	  //sentTime = interest.getTag<lp::FwdLatencyTag>();	
   }
-  sentTimeGlobal = *sentTime; // save it globally
+*/
+/*
+  auto hc = interest.getTag<lp::HopCountTag>();	
+
+  if (*hc == 0) { 
+	  interest.setTag(make_shared<lp::FwdLatencyTag>(*hc+1));
+	
+  }
+*/
+  //sentTimeGlobal = *sentTime; // save it globally
 
   // /localhost scope control
   bool isViolatingLocalhost = inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL &&
@@ -288,6 +298,17 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     return;
   }
 
+/*
+	auto newDataTag = data.getTag<lp::newDataTag>();
+	if (*newDataTag  == 0) {
+		data.setTag(make_shared<lp::newDataTag>(1));
+	}*/
+	// else - it is carried along by link layer to the producer
+	
+	// check if we are back to producer in the PIT check below
+
+	/*
+  
   auto fwdLatTag = data.getTag<lp::FwdLatencyTag>();	
 
   if (fwdLatTag == nullptr) {    // This is producer node. Data is coming from application.
@@ -310,6 +331,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	NFD_LOG_DEBUG("onincomingdata fwd_latency: " << *fwdLatTag << "  " << data.getName() << "  " << fwdDiff );
   }
+*/
   // PIT match
   pit::DataMatchResult pitMatches = m_pit.findAllDataMatches(data);
   if (pitMatches.size() == 0) {
@@ -319,22 +341,49 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   }
 
   
+ 	auto newDataTag = interestInPit.getTag<lp::newDataTag>();
+	// For forwarding nodes newData should be set to zero
+	if (*newDataTag == 1){
+		data.setTag(make_shared<lp::newDataTag>(0));
+	}	
+	  // CS insert
+ 	  m_cs.insert(data);
 
-  // CS insert
-  m_cs.insert(data);
-
+	if (*newDataTag == 1){ // revert the changes
+	  data.setTag(make_shared<lp::newDataTag>(1));	
+	}
+	
   // when only one PIT entry is matched, trigger strategy: after receive Data
   if (pitMatches.size() == 1) {
   
  
     auto& pitEntry = pitMatches.front();
 	
-	// checking if we have data stored in pit
-	//fwdLatTag = pitEntry->getTag<lp::FwdLatencyTag>();
-	auto int1 = pitEntry->getInterest();
-	fwdLatTag = int1.getTag<lp::FwdLatencyTag>();
-	NFD_LOG_DEBUG("onincomingdata pit_Entry: " << *fwdLatTag << "  " << int1.getName() );
+    auto interestInPit = pitEntry->getInterest();
+  	newDataTag = interestInPit.getTag<lp::newDataTag>();
+	// This happens at Producer
+	if (*newDataTag  == 0) {
+	    // copy the data from interest to data
+		data.setTag(make_shared<lp::newDataTag>(1));
+		
+		auto interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
+		auto interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
+ 		
+		fwdDiff = *interestArrivalTimeTag - *interestBirthTag;
+		data.setTag(make_shared<lp::fwdLatencyTag>(fwdDiff));	  
+		
+		auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
+		data.setTag(make_shared<lp::interestHopsTagField>(interestHopsTag));
+		//NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff);		
+	}
   
+    // This happens at Consumer
+    auto interestHopsTag = data.getTag<lp::interestHopsTag>();
+	auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
+    // check if we are back to producer 
+	if (*newDataTag  == 1 & *interestHopsTag == 0) { 
+		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
+	}
 
     NFD_LOG_DEBUG("onIncomingData matching=" << pitEntry->getName());  
 	

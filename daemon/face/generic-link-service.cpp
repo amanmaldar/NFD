@@ -125,14 +125,64 @@ GenericLinkService::doSendNack(const lp::Nack& nack)
 void
 GenericLinkService::encodeLpFields(const ndn::PacketBase& netPkt, lp::Packet& lpPacket)
 {
-   // changes for timestamp
-  shared_ptr<lp::FwdLatencyTag> latencyTag = netPkt.getTag<lp::FwdLatencyTag>();
-  if (latencyTag != nullptr) {
-    lpPacket.add<lp::FwdLatencyTagField>(*latencyTag);
+   // Add BirthTime to Interest
+  shared_ptr<lp::interestBirthTag> tag = netPkt.getTag<lp::interestBirthTag>();
+  if (tag != nullptr) {
+    lpPacket.add<lp::interestBirthTagField>(*tag);
+  }
+  else {	
+    timestamp = time::toUnixTimestamp(time::system_clock::now());
+	timeNow = timestamp.count();
+    lpPacket.add<lp::fwdLatencyTagField>(timeNow);
+  }
+   
+  // Add Arrival Time to Interest to Store in PIT
+  // We do not forward this Tag. Each PIT has unique value of this for same name.
+   shared_ptr<lp::interestArrivalTimeTag> tag = netPkt.getTag<lp::interestArrivalTimeTag>();
+  if (tag == nullptr) {
+    timestamp = time::toUnixTimestamp(time::system_clock::now());
+	timeNow = timestamp.count();
+    lpPacket.add<lp::interestArrivalTimeTagField>(timeNow);
+  }
+  
+  // Add Forwarding Latency to Data packet on the way back
+  shared_ptr<lp::fwdLatencyTag> tag = netPkt.getTag<lp::fwdLatencyTag>();
+  if (tag != nullptr) {
+    lpPacket.add<lp::fwdLatencyTagField>(*tag);
+  }
+  else {	// add the begin time for the interest packet
+    timestamp = time::toUnixTimestamp(time::system_clock::now());
+	timeNow = timestamp.count();
+    lpPacket.add<lp::fwdLatencyTagField>(timeNow);
+  }
+  
+  // This tag is set=1 by producer when it starts to send data back to consumer.
+  // Producer checks if newDataTagField == 0 onIncomingData and sets to 1. This tag is carried along the path.
+  // OnIncomingData.. If newDataTag = 1 and in PIT interestHopTag == 0, we are back to source 
+  // Consumer should clear newDataTag=0
+  shared_ptr<lp::newDataTag> tag = netPkt.getTag<lp::newDataTag>();
+  if (tag != nullptr) {
+    lpPacket.add<lp::newDataTagField>(*tag);
   }
   else {
-    lpPacket.add<lp::FwdLatencyTagField>(0);
+    lpPacket.add<lp::newDataTagField>(0);
   }
+  
+  // Read interest hop counts from current node's PIT to check if data has reached back to source.
+  // Divide interest hop count by 2 to get actual hops
+    shared_ptr<lp::interestHopsTag> tag = netPkt.getTag<lp::interestHopsTag>();
+	shared_ptr<lp::newDataTag> nDtag = netPkt.getTag<lp::newDataTag>();
+  if (tag != nullptr & *nDtag == 0 ) { // increment only on interest path.
+    lpPacket.add<lp::interestHopsTagField>(*tag+1);
+  }
+  else {
+    lpPacket.add<lp::interestHopsTagField>(0);
+  }
+  
+
+  
+  
+  
   
   if (m_options.allowLocalFields) {
     shared_ptr<lp::IncomingFaceIdTag> incomingFaceIdTag = netPkt.getTag<lp::IncomingFaceIdTag>();
