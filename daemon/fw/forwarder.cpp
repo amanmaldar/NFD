@@ -338,7 +338,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   
  
     auto& pitEntry = pitMatches.front();
-/*	
+	
     auto interestInPit = pitEntry->getInterest();
   	//newDataTag = interestInPit.getTag<lp::newDataTag>();
 	// This happens at Producer
@@ -366,7 +366,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	}
 
     NFD_LOG_DEBUG("onIncomingData matching=" << pitEntry->getName());  
-*/
+
 	
     // set PIT expiry timer to now
     this->setExpiryTimer(pitEntry, 0_ms);
