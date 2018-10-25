@@ -319,7 +319,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     this->onDataUnsolicited(inFace, data);
     return;
   }
-/*
+
     // Read the newTag. It is set to zero if not present by link layer
  	auto newDataTag = data.getTag<lp::newDataTag>();
 	// For forwarding nodes newData should be set to zero
@@ -330,11 +330,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	// revert back to original tag value
 	data.setTag(make_shared<lp::newDataTag>(*newDataTag));	
-*/	
 	
- // CS insert
-    m_cs.insert(data);
-  // when only one PIT entry is matched, trigger strategy: after receive Data
+ // when only one PIT entry is matched, trigger strategy: after receive Data
   if (pitMatches.size() == 1) {
   
  
