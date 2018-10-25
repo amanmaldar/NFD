@@ -346,16 +346,16 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	// This happens at Producer
 	if (*newDataTag  == 0) {
 	    // copy the data from interest to data
-		data.setTag(make_shared<lp::newDataTag>(1));
+	//	data.setTag(make_shared<lp::newDataTag>(1));
 		
 		auto interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
 		auto interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
  		
 	//	auto fwdDiff = *interestArrivalTimeTag - *interestBirthTag;
-		data.setTag(make_shared<lp::fwdLatencyTag>(10));	  
+	//	data.setTag(make_shared<lp::fwdLatencyTag>(10));	  
 		
 		auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
-		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
+	//	data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
 		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff);		
 	}
   
