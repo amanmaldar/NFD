@@ -340,31 +340,33 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     auto& pitEntry = pitMatches.front();
 	
     auto interestInPit = pitEntry->getInterest();
-  	//newDataTag = interestInPit.getTag<lp::newDataTag>();
-	// This happens at Producer
-	if (*newDataTag  == 0) {
-	    // copy the data from interest to data
-		data.setTag(make_shared<lp::newDataTag>(1));
+	
+	if (interestInPit != nullptr){
+	  	//newDataTag = interestInPit.getTag<lp::newDataTag>();
+		// This happens at Producer
+		if (*newDataTag  == 0) {
+		    // copy the data from interest to data
+			data.setTag(make_shared<lp::newDataTag>(1));
 		
-		auto interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
-		auto interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
+			auto interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
+			auto interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
  		
-		auto fwdDiff = *interestArrivalTimeTag - *interestBirthTag;
-		data.setTag(make_shared<lp::fwdLatencyTag>(fwdDiff));	  
+			auto fwdDiff = *interestArrivalTimeTag - *interestBirthTag;
+			data.setTag(make_shared<lp::fwdLatencyTag>(fwdDiff));	  
 		
-		auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
-		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
-		//NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff);		
-	}
+			auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
+			data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
+			//NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff);		
+		}
   
-    // This happens at Consumer
-    auto interestHopsTag = data.getTag<lp::interestHopsTag>();
-	auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
-    // check if we are back to producer 
-	if ((*newDataTag  == 1) & (*interestHopsTag == 0)) { 
-		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
+	    // This happens at Consumer
+	    auto interestHopsTag = data.getTag<lp::interestHopsTag>();
+		auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
+	    // check if we are back to producer 
+		if ((*newDataTag  == 1) & (*interestHopsTag == 0)) { 
+			NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
+		}
 	}
-
     NFD_LOG_DEBUG("onIncomingData matching=" << pitEntry->getName());  
 
 	
