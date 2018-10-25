@@ -340,7 +340,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     return;
   }
 
-  
+    // Read the newTag. It is set to zero if not present by link layer
  	auto newDataTag = data.getTag<lp::newDataTag>();
 	// For forwarding nodes newData should be set to zero
 	data.setTag(make_shared<lp::newDataTag>(0));
@@ -349,7 +349,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     m_cs.insert(data);
 
 	// revert back to original tag value
-	data.setTag(make_shared<lp::newDataTag>(newDataTag));	
+	data.setTag(make_shared<lp::newDataTag>(*newDataTag));	
 	
 	
   // when only one PIT entry is matched, trigger strategy: after receive Data
@@ -359,7 +359,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     auto& pitEntry = pitMatches.front();
 	
     auto interestInPit = pitEntry->getInterest();
-  	newDataTag = interestInPit.getTag<lp::newDataTag>();
+  	//newDataTag = interestInPit.getTag<lp::newDataTag>();
 	// This happens at Producer
 	if (*newDataTag  == 0) {
 	    // copy the data from interest to data
@@ -368,11 +368,11 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		auto interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
 		auto interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
  		
-		fwdDiff = *interestArrivalTimeTag - *interestBirthTag;
+		auto fwdDiff = *interestArrivalTimeTag - *interestBirthTag;
 		data.setTag(make_shared<lp::fwdLatencyTag>(fwdDiff));	  
 		
 		auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
-		data.setTag(make_shared<lp::interestHopsTag>(interestHopsTag));
+		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
 		//NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff);		
 	}
   
