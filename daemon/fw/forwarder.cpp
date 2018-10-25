@@ -341,17 +341,16 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   }
 
   
- 	auto newDataTag = interestInPit.getTag<lp::newDataTag>();
+ 	auto newDataTag = data.getTag<lp::newDataTag>();
 	// For forwarding nodes newData should be set to zero
-	if (*newDataTag == 1){
-		data.setTag(make_shared<lp::newDataTag>(0));
-	}	
-	  // CS insert
- 	  m_cs.insert(data);
+	data.setTag(make_shared<lp::newDataTag>(0));
 
-	if (*newDataTag == 1){ // revert the changes
-	  data.setTag(make_shared<lp::newDataTag>(1));	
-	}
+    // CS insert
+    m_cs.insert(data);
+
+	// revert back to original tag value
+	data.setTag(make_shared<lp::newDataTag>(newDataTag));	
+	
 	
   // when only one PIT entry is matched, trigger strategy: after receive Data
   if (pitMatches.size() == 1) {
