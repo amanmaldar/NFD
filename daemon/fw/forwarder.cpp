@@ -329,7 +329,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     m_cs.insert(data);
 
 	// revert back to original tag value
-	data.setTag(make_shared<lp::newDataTag>(*newDataTag));	
+	if(newDataTag != nullptr){
+		data.setTag(make_shared<lp::newDataTag>(*newDataTag));	
+	}
 	
  // when only one PIT entry is matched, trigger strategy: after receive Data
   if (pitMatches.size() == 1) {
