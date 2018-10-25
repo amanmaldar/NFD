@@ -172,7 +172,7 @@ GenericLinkService::encodeLpFields(const ndn::PacketBase& netPkt, lp::Packet& lp
   // Divide interest hop count by 2 to get actual hops
     shared_ptr<lp::interestHopsTag> tag5 = netPkt.getTag<lp::interestHopsTag>();
 	shared_ptr<lp::newDataTag> nDtag = netPkt.getTag<lp::newDataTag>();
-  if (tag5 != nullptr & *nDtag == 0 ) { // increment only on interest path.
+  if ((tag5 != nullptr) & (*nDtag == 0 )) { // increment only on interest path.
     lpPacket.add<lp::interestHopsTagField>(*tag5 + 1);
   }				
   else {
