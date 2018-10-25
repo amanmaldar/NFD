@@ -95,26 +95,6 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
                 " interest=" << interest.getName());
   interest.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
   ++m_counters.nInInterests;
- //_________________________Forwarding Latency__________________________________
-/*
-	timestamp = time::toUnixTimestamp(time::system_clock::now());
-	timeNow = timestamp.count();
-	auto sentTime = interest.getTag<lp::FwdLatencyTag>();	
-
-  if (*sentTime == 0) { 
-	  interest.setTag(make_shared<lp::FwdLatencyTag>(timeNow));
-	  //sentTime = interest.getTag<lp::FwdLatencyTag>();	
-  }
-*/
-/*
-  auto hc = interest.getTag<lp::HopCountTag>();	
-
-  if (*hc == 0) { 
-	  interest.setTag(make_shared<lp::FwdLatencyTag>(*hc+1));
-	
-  }
-*/
-  //sentTimeGlobal = *sentTime; // save it globally
 
   // /localhost scope control
   bool isViolatingLocalhost = inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL &&
@@ -339,7 +319,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     this->onDataUnsolicited(inFace, data);
     return;
   }
-
+/*
     // Read the newTag. It is set to zero if not present by link layer
  	auto newDataTag = data.getTag<lp::newDataTag>();
 	// For forwarding nodes newData should be set to zero
@@ -350,14 +330,16 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	// revert back to original tag value
 	data.setTag(make_shared<lp::newDataTag>(*newDataTag));	
+*/	
 	
-	
+ // CS insert
+    m_cs.insert(data);
   // when only one PIT entry is matched, trigger strategy: after receive Data
   if (pitMatches.size() == 1) {
   
  
     auto& pitEntry = pitMatches.front();
-	
+/*	
     auto interestInPit = pitEntry->getInterest();
   	//newDataTag = interestInPit.getTag<lp::newDataTag>();
 	// This happens at Producer
@@ -385,6 +367,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	}
 
     NFD_LOG_DEBUG("onIncomingData matching=" << pitEntry->getName());  
+*/
 	
     // set PIT expiry timer to now
     this->setExpiryTimer(pitEntry, 0_ms);
