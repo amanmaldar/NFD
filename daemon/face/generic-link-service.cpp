@@ -133,7 +133,7 @@ GenericLinkService::encodeLpFields(const ndn::PacketBase& netPkt, lp::Packet& lp
   else {	
     auto timestamp = time::toUnixTimestamp(time::system_clock::now());
 	auto timeNow = timestamp.count();
-    lpPacket.add<lp::fwdLatencyTagField>(timeNow);
+    lpPacket.add<lp::interestBirthTagField>(timeNow);
   }
    
   // Add Arrival Time to Interest to Store in PIT
