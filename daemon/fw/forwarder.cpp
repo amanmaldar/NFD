@@ -345,7 +345,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   	//newDataTag = interestInPit.getTag<lp::newDataTag>();
 	// This happens at Producer
 	NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << *newDataTag );
-	/*
+	
 	if (*newDataTag  == 0) {
 	    // copy the data from interest to data
 		data.setTag(make_shared<lp::newDataTag>(1));
@@ -368,7 +368,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	if ((*newDataTag  == 1) & (*interestHopsTag == 0)) { 
 		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 	}
-	*/
+	
 	
     NFD_LOG_DEBUG("onIncomingData matching=" << pitEntry->getName());  
 
