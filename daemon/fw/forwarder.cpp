@@ -325,8 +325,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
 	auto interestBirthTag = data.getTag<lp::interestBirthTag>();
 	auto interestArrivalTimeTag = data.getTag<lp::interestArrivalTimeTag>();
- 	auto interestHopsTag = data.getTag<lp::interestHopsTag>();
-	
+
 
 	// For forwarding nodes newData should be set to zero
 	//data.setTag(make_shared<lp::newDataTag>(0));
