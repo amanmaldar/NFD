@@ -347,7 +347,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << *newDataTag << "  " <<  *newDataTag  );
 	
 	
-	if (!*newDataTag) {
+	if (newDataTag  == nullptr) {
 	    // copy the data from interest to data
 		data.setTag(make_shared<lp::newDataTag>(1));
 		
@@ -366,7 +366,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     auto interestHopsTag = data.getTag<lp::interestHopsTag>();
 	auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
     // check if we are back to producer 
-	if ((*newDataTag) & (!*interestHopsTag)) { 
+	if ((*newDataTag  == 1) & (*interestHopsTag == 0)) { 
 		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 	}
 	

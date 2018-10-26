@@ -125,37 +125,31 @@ GenericLinkService::doSendNack(const lp::Nack& nack)
 void
 GenericLinkService::encodeLpFields(const ndn::PacketBase& netPkt, lp::Packet& lpPacket)
 {
+// Copy the tags to data structure
    // Add BirthTime to Interest
+
   shared_ptr<lp::interestBirthTag> tag1 = netPkt.getTag<lp::interestBirthTag>();
   if (tag1 != nullptr) {
-    lpPacket.add<lp::interestBirthTagField>(*tag1);
+    	lpPacket.add<lp::interestBirthTagField>(*tag1);   
   }
-  else {	
-    auto timestamp = time::toUnixTimestamp(time::system_clock::now());
-	auto timeNow = timestamp.count();
-    lpPacket.add<lp::interestBirthTagField>(timeNow);
-  }
+
    
   // Add Arrival Time to Interest to Store in PIT
   // We do not forward this Tag. Each PIT has unique value of this for same name.
+   
    shared_ptr<lp::interestArrivalTimeTag> tag2 = netPkt.getTag<lp::interestArrivalTimeTag>();
   if (tag2 == nullptr) {
-    auto timestamp = time::toUnixTimestamp(time::system_clock::now());
-	auto timeNow = timestamp.count();
-    lpPacket.add<lp::interestArrivalTimeTagField>(timeNow);
+    lpPacket.add<lp::interestArrivalTimeTagField>(*tag2);
   }
   
+  
   // Add Forwarding Latency to Data packet on the way back
+  
   shared_ptr<lp::fwdLatencyTag> tag3 = netPkt.getTag<lp::fwdLatencyTag>();
   if (tag3 != nullptr) {
     lpPacket.add<lp::fwdLatencyTagField>(*tag3);
   }
-  else {	// add the begin time for the interest packet
-    auto timestamp = time::toUnixTimestamp(time::system_clock::now());
-	auto timeNow = timestamp.count();
-    lpPacket.add<lp::fwdLatencyTagField>(timeNow);
-  }
-  
+   
   // This tag is set=1 by producer when it starts to send data back to consumer.
   // Producer checks if newDataTagField == 0 onIncomingData and sets to 1. This tag is carried along the path.
   // OnIncomingData.. If newDataTag = 1 and in PIT interestHopTag == 0, we are back to source 
@@ -164,21 +158,16 @@ GenericLinkService::encodeLpFields(const ndn::PacketBase& netPkt, lp::Packet& lp
   if (tag4 != nullptr) {
     lpPacket.add<lp::newDataTagField>(*tag4);
   }
-  else {
-    lpPacket.add<lp::newDataTagField>(0);
-  }
+ 
   
   // Read interest hop counts from current node's PIT to check if data has reached back to source.
   // Divide interest hop count by 2 to get actual hops
     shared_ptr<lp::interestHopsTag> tag5 = netPkt.getTag<lp::interestHopsTag>();
 	shared_ptr<lp::newDataTag> nDtag = netPkt.getTag<lp::newDataTag>();
-  if ((tag5 != nullptr) & (*nDtag == 0 )) { // increment only on interest path.
-    lpPacket.add<lp::interestHopsTagField>(*tag5 + 1);
+  if (tag5 != nullptr) { // increment only on interest path.
+    lpPacket.add<lp::interestHopsTagField>(*tag5);
   }				
-  else {
-    lpPacket.add<lp::interestHopsTagField>(0);
-  }
-  
+
 
   
   
@@ -405,20 +394,33 @@ GenericLinkService::decodeInterest(const Block& netPkt, const lp::Packet& firstP
   auto interest = make_shared<Interest>(netPkt);
 
 // this is tag forwarding feature for interest
- // decode latencyTag
+
   if (firstPkt.has<lp::interestHopsTagField>()) {
-    interest->setTag(make_shared<lp::interestHopsTag>(firstPkt.get<lp::interestHopsTagField>()));
+  	interest->setTag(make_shared<lp::interestHopsTag>(firstPkt.get<lp::interestHopsTagField>() + 1));
+  }  
+  else {
+	interest->setTag(make_shared<lp::interestHopsTag>(0));
   }
+
   
-    if (firstPkt.has<lp::interestBirthTagField>()) {
+  if (firstPkt.has<lp::interestBirthTagField>()) {
     interest->setTag(make_shared<lp::interestBirthTag>(firstPkt.get<lp::interestBirthTagField>()));
   }
-  
-      if (firstPkt.has<lp::interestArrivalTimeTagField>()) {
-    interest->setTag(make_shared<lp::interestArrivalTimeTag>(firstPkt.get<lp::interestArrivalTimeTagField>()));
+  else {
+  	auto timestamp = time::toUnixTimestamp(time::system_clock::now());
+	auto timeNow = timestamp.count();
+	interest->setTag(make_shared<lp::interestBirthTag>(timeNow);
   }
   
- 
+  if (firstPkt.has<lp::interestArrivalTimeTagField>()) {
+   	// do nothing, New entry for each NFD pit
+  }
+  else{
+    auto timestamp = time::toUnixTimestamp(time::system_clock::now());
+	auto timeNow = timestamp.count();
+	interest->setTag(make_shared<lp::interestArrivalTimeTag>(timeNow);
+  }
+  
   if (firstPkt.has<lp::NextHopFaceIdField>()) {
     if (m_options.allowLocalFields) {
       interest->setTag(make_shared<lp::NextHopFaceIdTag>(firstPkt.get<lp::NextHopFaceIdField>()));
@@ -481,6 +483,9 @@ GenericLinkService::decodeData(const Block& netPkt, const lp::Packet& firstPkt)
     if (firstPkt.has<lp::interestHopsTagField>()) {
     data->setTag(make_shared<lp::interestHopsTag>(firstPkt.get<lp::interestHopsTagField>()));
   }
+  
+  
+ 
 
 
   if (firstPkt.has<lp::NackField>()) {
