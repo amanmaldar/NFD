@@ -246,8 +246,8 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	
     // check if we are back to consumer
 	auto interestHopsTag1 = interestInPit.getTag<lp::interestHopsTag>();
-	auto newDataTag1 = interestInPit.getTag<lp::newDataTag>();
-	if ((newDataTag1  == nullptr) & (*interestHopsTag1 == 1)) { 
+	auto newDataTag1 = data.getTag<lp::newDataTag>();
+	if ((*newDataTag1  == 1) & (*interestHopsTag1 == 1)) { 
 		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 	}
 
@@ -321,10 +321,21 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
     // Read the newTag. It is set to zero if not present by link layer
  	auto newDataTag = data.getTag<lp::newDataTag>();
+	auto interestHopsTag = data.getTag<lp::interestHopsTag>();
+	auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
+	auto interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
+	auto interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
+ 	auto interestHopsTag = data.getTag<lp::interestHopsTag>();
+	
 
 	// For forwarding nodes newData should be set to zero
 	//data.setTag(make_shared<lp::newDataTag>(0));
 	data.removeTag<lp::newDataTag>();
+	data.removeTag<lp::interestHopsTag>();
+	data.removeTag<lp::fwdLatencyTag>();
+	data.removeTag<lp::interestBirthTag>();
+	data.removeTag<lp::interestArrivalTimeTag>();
+	data.removeTag<lp::interestHopsTag>();
 
     // CS insert
     m_cs.insert(data);
@@ -333,7 +344,21 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	if(newDataTag != nullptr){
 		data.setTag(make_shared<lp::newDataTag>(*newDataTag));	
 	}
-	
+	if(interestHopsTag != nullptr){
+		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));	
+	}
+	if(fwdLatencyTag != nullptr){
+		data.setTag(make_shared<lp::fwdLatencyTag>(*fwdLatencyTag));	
+	}
+	if(interestBirthTag != nullptr){
+		data.setTag(make_shared<lp::interestBirthTag>(*interestBirthTag));	
+	}
+	if(interestArrivalTimeTag != nullptr){
+		data.setTag(make_shared<lp::interestArrivalTimeTag>(*interestArrivalTimeTag));	
+	}
+	if(interestHopsTag != nullptr){
+		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));	
+	}
  // when only one PIT entry is matched, trigger strategy: after receive Data
   if (pitMatches.size() == 1) {
   
@@ -348,25 +373,25 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	    // copy the data from interest to data
 		data.setTag(make_shared<lp::newDataTag>(1));
 		
-		auto interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
-		auto interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
+		interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
+		interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
  		
 		auto fwdDiff = *interestArrivalTimeTag - *interestBirthTag;
 		data.setTag(make_shared<lp::fwdLatencyTag>(fwdDiff));	  
 		
-		auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
+		interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
 		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
 		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff);		
 	}
   
     // This happens at Consumer
-    auto interestHopsTag = data.getTag<lp::interestHopsTag>();
-	auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
+    interestHopsTag = data.getTag<lp::interestHopsTag>();
+	fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
 	
     // check if we are back to consumer
-	auto interestHopsTag1 = interestInPit.getTag<lp::interestHopsTag>();
-	auto newDataTag1 = interestInPit.getTag<lp::newDataTag>();
-	if ((newDataTag1  == nullptr) & (*interestHopsTag1 == 1)) { 
+	interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
+	newDataTag = data.getTag<lp::newDataTag>();
+	if ((*newDataTag  == 1) & (*interestHopsTag == 1)) { 
 		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 	}
 	
