@@ -224,7 +224,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 
 	auto interestInPit = pitEntry->getInterest();
 
-	// This happens at Producer
+	// This happens at Producer and CS hits scenarion
 	if (newDataTag  == nullptr) {
 	    // copy the data from interest to data
 		data.setTag(make_shared<lp::newDataTag>(1));
@@ -237,7 +237,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 		
 		auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
 		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
-		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff);		
+		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff << "  hop count: " << *interestHopsTag );		
 	}
   
     // This happens at Consumer
@@ -248,7 +248,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	auto interestHopsTag1 = interestInPit.getTag<lp::interestHopsTag>();
 	auto newDataTag1 = data.getTag<lp::newDataTag>();
 	if ((*newDataTag1  == 1) & (*interestHopsTag1 == 1)) { 
-		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
+		NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 	}
 
 
@@ -334,7 +334,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	data.removeTag<lp::fwdLatencyTag>();
 	data.removeTag<lp::interestBirthTag>();
 	data.removeTag<lp::interestArrivalTimeTag>();
-	data.removeTag<lp::interestHopsTag>();
+
 
     // CS insert
     m_cs.insert(data);
