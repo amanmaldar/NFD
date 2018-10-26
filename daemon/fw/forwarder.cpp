@@ -241,7 +241,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 //	}
   
     // This happens at Consumer
-    auto interestHopsTag = data.getTag<lp::interestHopsTag>();
+    interestHopsTag = data.getTag<lp::interestHopsTag>();
 	auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
 	
     // check if we are back to consumer
