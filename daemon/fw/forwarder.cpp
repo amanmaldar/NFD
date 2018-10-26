@@ -220,6 +220,38 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
   data.setTag(make_shared<lp::IncomingFaceIdTag>(face::FACEID_CONTENT_STORE));
   // XXX should we lookup PIT for other Interests that also match csMatch?
 
+	auto newDataTag = data.getTag<lp::newDataTag>();
+
+	auto interestInPit = pitEntry->getInterest();
+
+	// This happens at Producer
+	if (newDataTag  == nullptr) {
+	    // copy the data from interest to data
+		data.setTag(make_shared<lp::newDataTag>(1));
+		
+		auto interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
+		auto interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
+ 		
+		auto fwdDiff = *interestArrivalTimeTag - *interestBirthTag;
+		data.setTag(make_shared<lp::fwdLatencyTag>(fwdDiff));	  
+		
+		auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
+		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
+		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff);		
+	}
+  
+    // This happens at Consumer
+    auto interestHopsTag = data.getTag<lp::interestHopsTag>();
+	auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
+	
+    // check if we are back to consumer
+	auto interestHopsTag1 = interestInPit.getTag<lp::interestHopsTag>();
+	auto newDataTag1 = interestInPit.getTag<lp::newDataTag>();
+	if ((newDataTag1  == nullptr) & (*interestHopsTag1 == 1)) { 
+		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
+	}
+
+
   pitEntry->isSatisfied = true;
   pitEntry->dataFreshnessPeriod = data.getFreshnessPeriod();
 
@@ -292,7 +324,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	// For forwarding nodes newData should be set to zero
 	//data.setTag(make_shared<lp::newDataTag>(0));
-	data.setTag(make_shared<lp::newDataTag>(0));
+	data.removeTag(lp::newDataTag);
 
     // CS insert
     m_cs.insert(data);
@@ -307,6 +339,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   
  
     auto& pitEntry = pitMatches.front();
+	
 	
     auto interestInPit = pitEntry->getInterest();
 
