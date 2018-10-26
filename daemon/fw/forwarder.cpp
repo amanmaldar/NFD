@@ -323,8 +323,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
  	auto newDataTag = data.getTag<lp::newDataTag>();
 	auto interestHopsTag = data.getTag<lp::interestHopsTag>();
 	auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
-	auto interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
-	auto interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
+	auto interestBirthTag = data.getTag<lp::interestBirthTag>();
+	auto interestArrivalTimeTag = data.getTag<lp::interestArrivalTimeTag>();
  	auto interestHopsTag = data.getTag<lp::interestHopsTag>();
 	
 
@@ -356,9 +356,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	if(interestArrivalTimeTag != nullptr){
 		data.setTag(make_shared<lp::interestArrivalTimeTag>(*interestArrivalTimeTag));	
 	}
-	if(interestHopsTag != nullptr){
-		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));	
-	}
+
  // when only one PIT entry is matched, trigger strategy: after receive Data
   if (pitMatches.size() == 1) {
   
