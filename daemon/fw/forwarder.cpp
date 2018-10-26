@@ -220,34 +220,28 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
   data.setTag(make_shared<lp::IncomingFaceIdTag>(face::FACEID_CONTENT_STORE));
   // XXX should we lookup PIT for other Interests that also match csMatch?
 
-	auto newDataTag = data.getTag<lp::newDataTag>();
-
 	auto interestInPit = pitEntry->getInterest();
 
-	// This happens at Producer and CS hits scenarion
-//	if (newDataTag  == nullptr) {
-	    // copy the data from interest to data
-		data.setTag(make_shared<lp::newDataTag>(1));
+	// Always do these for CS Hit at Producer
+	data.setTag(make_shared<lp::newDataTag>(1));
 		
-		auto interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
-		auto interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
+	auto interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
+	auto interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
  		
-		auto fwdDiff = *interestArrivalTimeTag - *interestBirthTag;
-		data.setTag(make_shared<lp::fwdLatencyTag>(fwdDiff));	  
+	auto fwdDiff = *interestArrivalTimeTag - *interestBirthTag;
+	data.setTag(make_shared<lp::fwdLatencyTag>(fwdDiff));	  
 		
-		auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
-		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
-		NFD_LOG_DEBUG("onincomingdata csfull data: " << data.getName() << "  " << fwdDiff << "  hop count: " << *interestHopsTag );		
-//	}
+	auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
+	data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
+	NFD_LOG_DEBUG("onincomingdata csfull data: " << data.getName() << "  " << fwdDiff << "  hop count: " << *interestHopsTag );		
+
   
-    // This happens at Consumer
-    interestHopsTag = data.getTag<lp::interestHopsTag>();
-	auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
-	
     // check if we are back to consumer
-	auto interestHopsTag1 = interestInPit.getTag<lp::interestHopsTag>();
-	auto newDataTag1 = data.getTag<lp::newDataTag>();
-	if ((*newDataTag1  == 1) & (*interestHopsTag1 == 1)) { 
+	interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
+	auto newDataTag = data.getTag<lp::newDataTag>();
+	if ((*newDataTag  == 1) & (*interestHopsTag == 1)) { 
+	    interestHopsTag = data.getTag<lp::interestHopsTag>();
+		auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
 		NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 	}
 
@@ -381,15 +375,13 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff << "  hop count " <<  *interestHopsTag);		
 	}
   
-    // This happens at Consumer
-    interestHopsTag = data.getTag<lp::interestHopsTag>();
-	fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
-	
+
     // check if we are back to consumer
 	interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
 	newDataTag = data.getTag<lp::newDataTag>();
 	if ((*newDataTag  == 1) & (*interestHopsTag == 1)) { 
 	    interestHopsTag = data.getTag<lp::interestHopsTag>();
+		fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
 		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 	}
 	
