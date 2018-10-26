@@ -418,7 +418,7 @@ GenericLinkService::decodeInterest(const Block& netPkt, const lp::Packet& firstP
   else{
     auto timestamp = time::toUnixTimestamp(time::system_clock::now());
 	auto timeNow = timestamp.count();
-	interest->setTag(make_shared<lp::interestArrivalTimeTag>(timeNow);
+	interest->setTag(make_shared<lp::interestArrivalTimeTag>(timeNow));
   }
   
   if (firstPkt.has<lp::NextHopFaceIdField>()) {
