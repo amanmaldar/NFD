@@ -344,7 +344,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	
   	//newDataTag = interestInPit.getTag<lp::newDataTag>();
 	
-	NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << *newDataTag << "  " <<  *newDataTag  );
+	//NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << *newDataTag << "  " <<  *newDataTag  );
 	
 	// This happens at Producer
 	if (newDataTag  == nullptr) {
