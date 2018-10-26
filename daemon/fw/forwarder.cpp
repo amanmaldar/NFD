@@ -367,9 +367,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
 	
     // check if we are back to consumer
-	auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
-	auto newDataTag = interestInPit.getTag<lp::newDataTag>();
-	if ((newDataTag  == nullptr) & (*interestHopsTag == 0)) { 
+	auto interestHopsTag1 = interestInPit.getTag<lp::interestHopsTag>();
+	auto newDataTag1 = interestInPit.getTag<lp::newDataTag>();
+	if ((newDataTag1  == nullptr) & (*interestHopsTag1 == 0)) { 
 		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 	}
 	
