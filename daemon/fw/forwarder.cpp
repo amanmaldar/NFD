@@ -322,10 +322,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
     // Read the newTag. It is set to zero if not present by link layer
  	auto newDataTag = data.getTag<lp::newDataTag>();
-	auto interestHopsTag = data.getTag<lp::interestHopsTag>();
+	//auto interestHopsTag = data.getTag<lp::interestHopsTag>();
 	// For forwarding nodes newData should be set to zero
 	data.setTag(make_shared<lp::newDataTag>(0));
-	data.setTag(make_shared<lp::interestHopsTag>(0));
+	//data.setTag(make_shared<lp::interestHopsTag>(0));
 	
 
     // CS insert
@@ -335,9 +335,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	if(newDataTag != nullptr){
 		data.setTag(make_shared<lp::newDataTag>(*newDataTag));	
 	}
+	/*
 	if(interestHopsTag != nullptr){
 		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));	
-	}
+	}*/
  // when only one PIT entry is matched, trigger strategy: after receive Data
   if (pitMatches.size() == 1) {
   
@@ -362,19 +363,19 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		auto fwdDiff = *interestArrivalTimeTag - *interestBirthTag;
 		data.setTag(make_shared<lp::fwdLatencyTag>(fwdDiff));	  
 		
-		interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
+		auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
 		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
 		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff);		
 	}
   
     // This happens at Consumer
-    interestHopsTag = data.getTag<lp::interestHopsTag>();
+    auto interestHopsTag = data.getTag<lp::interestHopsTag>();
 	auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
 	
     // check if we are back to consumer
 	auto interestHopsTag1 = interestInPit.getTag<lp::interestHopsTag>();
 	auto newDataTag1 = interestInPit.getTag<lp::newDataTag>();
-	if ((newDataTag1  == nullptr) & (*interestHopsTag1 == 0)) { 
+	if ((newDataTag1  == nullptr) & (*interestHopsTag1 == 1)) { 
 		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 	}
 	
