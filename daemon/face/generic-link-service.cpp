@@ -137,10 +137,12 @@ GenericLinkService::encodeLpFields(const ndn::PacketBase& netPkt, lp::Packet& lp
   // Add Arrival Time to Interest to Store in PIT
   // We do not forward this Tag. Each PIT has unique value of this for same name.
    
+   /*
    shared_ptr<lp::interestArrivalTimeTag> tag2 = netPkt.getTag<lp::interestArrivalTimeTag>();
-  if (tag2 == nullptr) {
+  if (tag2 != nullptr) {
     lpPacket.add<lp::interestArrivalTimeTagField>(*tag2);
   }
+  */
   
   
   // Add Forwarding Latency to Data packet on the way back
@@ -163,7 +165,6 @@ GenericLinkService::encodeLpFields(const ndn::PacketBase& netPkt, lp::Packet& lp
   // Read interest hop counts from current node's PIT to check if data has reached back to source.
   // Divide interest hop count by 2 to get actual hops
     shared_ptr<lp::interestHopsTag> tag5 = netPkt.getTag<lp::interestHopsTag>();
-	shared_ptr<lp::newDataTag> nDtag = netPkt.getTag<lp::newDataTag>();
   if (tag5 != nullptr) { // increment only on interest path.
     lpPacket.add<lp::interestHopsTagField>(*tag5);
   }				
