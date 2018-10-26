@@ -324,7 +324,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	// For forwarding nodes newData should be set to zero
 	//data.setTag(make_shared<lp::newDataTag>(0));
-	data.removeTag(<lp::newDataTag>);
+	data.removeTag(<lp::newDataTag>());
 
     // CS insert
     m_cs.insert(data);
