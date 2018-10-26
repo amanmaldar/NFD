@@ -336,7 +336,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		data.setTag(make_shared<lp::newDataTag>(*newDataTag));	
 	}
 	if(interestHopsTag != nullptr){
-		data.setTag(make_shared<lp::newDataTag>(*interestHopsTag));	
+		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));	
 	}
  // when only one PIT entry is matched, trigger strategy: after receive Data
   if (pitMatches.size() == 1) {
