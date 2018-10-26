@@ -400,7 +400,7 @@ GenericLinkService::decodeInterest(const Block& netPkt, const lp::Packet& firstP
   	interest->setTag(make_shared<lp::interestHopsTag>(firstPkt.get<lp::interestHopsTagField>() + 1));
   }  
   else {
-	interest->setTag(make_shared<lp::interestHopsTag>(0));
+	interest->setTag(make_shared<lp::interestHopsTag>(1));
   }
 
   
