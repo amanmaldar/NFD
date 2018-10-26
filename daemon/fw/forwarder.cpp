@@ -278,40 +278,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     return;
   }
 
-/*
-	auto newDataTag = data.getTag<lp::newDataTag>();
-	if (*newDataTag  == 0) {
-		data.setTag(make_shared<lp::newDataTag>(1));
-	}*/
-	// else - it is carried along by link layer to the producer
-	
-	// check if we are back to producer in the PIT check below
 
-	/*
-  
-  auto fwdLatTag = data.getTag<lp::FwdLatencyTag>();	
-
-  if (fwdLatTag == nullptr) {    // This is producer node. Data is coming from application.
-
-	timestamp = time::toUnixTimestamp(time::system_clock::now());
-	
-	timeNow = timestamp.count();
-
-	fwdDiff = timeNow - sentTimeGlobal;
-	//fwdDiff = 10;
-	data.setTag(make_shared<lp::FwdLatencyTag>(fwdDiff));	  // not necessary
-	NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff);
-  }
-  
-   if (fwdLatTag != nullptr) {	// This is forwarding router betweeen producer and consumer
-	// Read the tag from incoing data and reattach it to outgoing data
-	// we dont need to do this. Generic link layer has code to forward tags.
-	//fwdDiff = *fwdLatTag;
-	//data.setTag(make_shared<lp::FwdLatencyTag>(fwdDiff));
-
-	NFD_LOG_DEBUG("onincomingdata fwd_latency: " << *fwdLatTag << "  " << data.getName() << "  " << fwdDiff );
-  }
-*/
   // PIT match
   pit::DataMatchResult pitMatches = m_pit.findAllDataMatches(data);
   if (pitMatches.size() == 0) {
@@ -322,23 +289,19 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
     // Read the newTag. It is set to zero if not present by link layer
  	auto newDataTag = data.getTag<lp::newDataTag>();
-	//auto interestHopsTag = data.getTag<lp::interestHopsTag>();
+
 	// For forwarding nodes newData should be set to zero
+	//data.setTag(make_shared<lp::newDataTag>(0));
 	data.setTag(make_shared<lp::newDataTag>(0));
-	//data.setTag(make_shared<lp::interestHopsTag>(0));
-	
 
     // CS insert
     m_cs.insert(data);
 
-	// revert back to original tag value
+	// Revert back to original tag value. Needed for forwarding.
 	if(newDataTag != nullptr){
 		data.setTag(make_shared<lp::newDataTag>(*newDataTag));	
 	}
-	/*
-	if(interestHopsTag != nullptr){
-		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));	
-	}*/
+	
  // when only one PIT entry is matched, trigger strategy: after receive Data
   if (pitMatches.size() == 1) {
   
@@ -346,12 +309,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     auto& pitEntry = pitMatches.front();
 	
     auto interestInPit = pitEntry->getInterest();
-	
-	
-  	//newDataTag = interestInPit.getTag<lp::newDataTag>();
-	
-	//NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << *newDataTag << "  " <<  *newDataTag  );
-	
+
 	// This happens at Producer
 	if (newDataTag  == nullptr) {
 	    // copy the data from interest to data
