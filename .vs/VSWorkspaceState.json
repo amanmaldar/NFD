@@ -1,6 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\daemon",
+    "\\daemon\\table"
   ],
+  "SelectedNode": "\\daemon\\table\\pit.cpp",
   "PreviewInSolutionExplorer": false
 }
