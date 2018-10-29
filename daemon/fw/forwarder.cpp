@@ -254,7 +254,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
 	data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
 	NFD_LOG_DEBUG("onincomingdata csfull data: " << data.getName() << "  " << fwdDiff << "  hop count: " << *interestHopsTag );		
-
+	NFD_LOG_DEBUG("cshits local" << data.getName());
   
     // check if we are back to consumer
 	interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
@@ -277,6 +277,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 			nm.nInData++;
 			nm.fwdLatencyTag += *fwdLatencyTag;
 			nm.responseTime += responseTime;
+			NFD_LOG_DEBUG("cshits non_local" << data.getName());
 		}
 	}
 
