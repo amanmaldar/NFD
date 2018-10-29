@@ -24,7 +24,6 @@ namespace cs {
 					<< "    TotalInDataPackets=" << ndnPerf::nInData << "\n";
 			ofs.close();
 }
-		}
 
 
 }

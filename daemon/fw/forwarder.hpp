@@ -38,6 +38,7 @@
 #include "table/strategy-choice.hpp"
 #include "table/dead-nonce-list.hpp"
 #include "table/network-region-table.hpp"
+#include <core/global.hpp>
 // chnages for hop count 
 #include <ndn-cxx/lp/tags.hpp>
 
