@@ -23,7 +23,7 @@ class ndnPerf{
 		static uint64_t nInData;
 	public:
 	static void printMetrics(std::string action);
-}
+};
 	
 	
 
