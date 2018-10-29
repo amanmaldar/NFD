@@ -105,10 +105,12 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
 	if (interestName_2.find("/ndn/metrics/show") != std::string::npos) {
 		pm.printNwMetrics(nm);
+		return;
 	}			
 			
-	if (interestName_2.find("/ndn/metrics/clear") != std::string::npos) {
+	if (interestName_2.find("/ndn/metrics/zero") != std::string::npos) {
 		pm.clearNwMetrics(nm);
+		return;
 	} 
 		
 
@@ -271,9 +273,11 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 		"  hop count: " << *interestHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
 	
 		// update the global counters
-		nm.nInData++;
-		nm.fwdLatencyTag += *fwdLatencyTag;
-		nm.responseTime += responseTime;
+		if (inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL){
+			nm.nInData++;
+			nm.fwdLatencyTag += *fwdLatencyTag;
+			nm.responseTime += responseTime;
+		}
 	}
 
 
