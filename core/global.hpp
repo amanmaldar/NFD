@@ -23,7 +23,7 @@ namespace cs {
 	
 	public:
 		void printNwMetrics(networkMetrics nm);
-		void clearNwMetrics(networkMetrics &nm);
+		networkMetrics clearNwMetrics(networkMetrics &nm);
 	};
 
 
