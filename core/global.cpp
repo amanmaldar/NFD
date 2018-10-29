@@ -25,15 +25,6 @@ namespace cs {
 			nm.fwdLatencyTag = 0; 
 			nm.nInData = 0;
 			
-			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "Network_Metrics\n"
-					<< "    TotalRespTime="<< nm.responseTime << "\n"
-					<< "    AvgRespTime="<< nm.responseTime << "\n"
-					<< "    TotalFwdLatency=" << nm.fwdLatencyTag <<"\n"
-					<< "    AvgFwdLatency=" << nm.fwdLatencyTag <<"\n"
-					<< "    TotalInDataPackets=" << nm.nInData << "\n";
-			ofs.close();
-			
 		}
 
 
