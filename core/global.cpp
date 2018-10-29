@@ -9,12 +9,23 @@ namespace cs {
 
 		void perfMeasure::printNwMetrics(networkMetrics nm){
 		
+			if (nm.nInData != 0)
+			{
+				auto art = nm.responseTime/nm.nInData ;
+				auto afd = nm.fwdLatencyTag/nm.nInData ;
+			}
+			else{
+				auto art = 0;
+				auto afd = 0;
+			}
+			
+		
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "Network_Metrics\n"
 					<< "    TotalRespTime="<< nm.responseTime << "\n"
-					<< "    AvgRespTime="<< nm.responseTime/nm.nInData << "\n"
+					<< "    AvgRespTime="<< art << "\n"
 					<< "    TotalFwdLatency=" << nm.fwdLatencyTag <<"\n"
-					<< "    AvgFwdLatency=" << nm.fwdLatencyTag/nm.nInData <<"\n"
+					<< "    AvgFwdLatency=" << afd <<"\n"
 					<< "    TotalInDataPackets=" << nm.nInData << "\n";
 			ofs.close();
 		
