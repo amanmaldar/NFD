@@ -35,9 +35,9 @@
 
 #include <ndn-cxx/lp/tags.hpp>
 
-ndnPerf::responseTime = 0;
-ndnPerf::fwdLatencyTag = 0; 
-ndnPerf::nInData = 0;
+uint64_t ndnPerf::responseTime = 0;
+uint64_t ndnPerf::fwdLatencyTag = 0; 
+uint64_t ndnPerf::nInData = 0;
 namespace nfd {
 
 //NFD_LOG_INIT(Forwarder);
