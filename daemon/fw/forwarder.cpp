@@ -273,7 +273,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	// update the global counters
 	nm.nInData++;
 	nm.fwdLatencyTag += *fwdLatencyTag;
-	nm.responseTime += responseTime;
+	nm.responseTime += *responseTime;
 	}
 
 
