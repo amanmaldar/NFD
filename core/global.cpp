@@ -5,7 +5,7 @@ namespace nfd {
 namespace cs {
 
 
-		void perfMeasure::printNwMetrics(networkMetrics nm, std::string action){
+		void perfMeasure::printNwMetrics(networkMetrics nm){
 			const char *path="/home/lenovo/Dropbox/Thesis/Logs/minindn3/status_2.txt";
 			std::ofstream ofs;
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
@@ -20,9 +20,9 @@ namespace cs {
 		}
 		
 		void perfMeasure::clearNwMetrics(networkMetrics &nm){
-			*nm.responseTime = 0;
-			*nm.fwdLatencyTag = 0; 
-			*nm.nInData = 0;
+			*nm->responseTime = 0;
+			*nm->fwdLatencyTag = 0; 
+			*nm->nInData = 0;
 		}
 
 
