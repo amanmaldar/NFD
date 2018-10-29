@@ -21,8 +21,8 @@ namespace cs {
 		
 		void perfMeasure::clearNwMetrics(networkMetrics &nm){
 			nm.responseTime = 0;
-			*nm->fwdLatencyTag = 0; 
-			*nm.nInData = 0;
+			nm.fwdLatencyTag = 0; 
+			nm.nInData = 0;
 		}
 
 
