@@ -5,25 +5,30 @@ namespace nfd {
 namespace cs {
 
 
-		void ndnPerf::printMetrics(std::string action){
-		
-		if (!action.compare("reset")){
-			ndnPerf::responseTime = 0;
-			ndnPerf::fwdLatencyTag = 0; 
-			ndnPerf::nInData = 0;
-		}
-		
-		const char *path="/home/lenovo/Dropbox/Thesis/Logs/minindn3/status_2.txt";
-		std::ofstream ofs;
-		ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
+		void perfMeasure::printNmMetrics(networkMetrics nm, std::string action){
+			const char *path="/home/lenovo/Dropbox/Thesis/Logs/minindn3/status_2.txt";
+			std::ofstream ofs;
+			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "CS_Metrics\n"
-					<< "    TotalRespTime="<< ndnPerf::responseTime << "\n"
-					<< "    AvgRespTime="<< ndnPerf::responseTime/ndnPerf::nInData << "\n"
-					<< "    TotalFwdLatency=" << ndnPerf::fwdLatencyTag <<"\n"
-					<< "    AvgFwdLatency=" << ndnPerf::fwdLatencyTag/ndnPerf::nInData <<"\n"
-					<< "    TotalInDataPackets=" << ndnPerf::nInData << "\n";
+					<< "    TotalRespTime="<< nm.responseTime << "\n"
+					<< "    AvgRespTime="<< nm.responseTime/ndnPerf::nInData << "\n"
+					<< "    TotalFwdLatency=" << nm.fwdLatencyTag <<"\n"
+					<< "    AvgFwdLatency=" << nm.fwdLatencyTag/ndnPerf::nInData <<"\n"
+					<< "    TotalInDataPackets=" << nm.nInData << "\n";
 			ofs.close();
 	}
+		
+		}
+		
+		void clearNwMetrics(networkMetrics &nm){
+			*nm.responseTime = 0;
+			*nm.fwdLatencyTag = 0; 
+			*nm.nInData = 0;
+		}
+
+
+		
+		
 
 
 }

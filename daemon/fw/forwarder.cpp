@@ -35,9 +35,7 @@
 
 #include <ndn-cxx/lp/tags.hpp>
 
-uint64_t ndnPerf::responseTime = 0;
-uint64_t ndnPerf::fwdLatencyTag = 0; 
-uint64_t ndnPerf::nInData = 0;
+nfd::cs::perfMeasure pm;
 namespace nfd {
 
 //NFD_LOG_INIT(Forwarder);
@@ -105,11 +103,11 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
 
 	if (interestName_2.find("/ndn/metrics/show") != std::string::npos) {
-		ndnPerf::printMetrics(show);
+		pm.printMetrics(show);
 	}			
 			
 	if (interestName_2.find("/ndn/metrics/reset") != std::string::npos) {
-		ndnPerf::printMetrics(reset);
+		pm.printMetrics(reset);
 	} 
 		
 

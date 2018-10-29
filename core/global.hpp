@@ -16,14 +16,20 @@
 namespace nfd {
 namespace cs {
 
-class ndnPerf{
+	struct networkMetrics {
+		uint64_t responseTime;
+		uint64_t fwdLatencyTag;
+		uint64_t nInData;
+	}
+		
+	class perfMeasure{
+	
 	public:
-		static uint64_t responseTime;
-		static uint64_t fwdLatencyTag;
-		static uint64_t nInData;
-	public:
-		static void printMetrics(std::string action);
-};
+		void printNwMetrics(networkMetrics nm);
+		void clearNwMetrics(networkMetrics &nm);
+	};
+
+
 	
 	
 
