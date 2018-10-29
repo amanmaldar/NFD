@@ -260,7 +260,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	if ((*newDataTag  == 1) & (*interestHopsTag == 1)) { 
 	    interestHopsTag = data.getTag<lp::interestHopsTag>();
 		auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
-		NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
+		//NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 	
 		// response time
 		auto timestamp = time::toUnixTimestamp(time::system_clock::now());
@@ -423,11 +423,17 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		auto responseTime = timeNow - *interestBirthTag;
 		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << \
 		"  hop count: " << *interestHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
+		NFD_LOG_DEBUG("onincomingdata local" << data.getName());
+		
 		
 		// update the global counters
-		nm.nInData++;
-		nm.fwdLatencyTag += *fwdLatencyTag;
-		nm.responseTime += responseTime;
+		if (inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL){
+			nm.nInData++;
+			nm.fwdLatencyTag += *fwdLatencyTag;
+			nm.responseTime += responseTime;
+			NFD_LOG_DEBUG("onincomingdata non_local" << data.getName());
+
+		}
  
 	}
 	
