@@ -109,7 +109,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 	}			
 			
 	if (interestName_2.find("/ndn/metrics/zero") != std::string::npos) {
-		&nm = pm.clearNwMetrics(nm);
+		nm = pm.clearNwMetrics(nm);
 		return;
 	} 
 		
