@@ -251,7 +251,6 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	auto responseTime = timeNow - *interestBirthTag;
 	NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << \
 	"  hop count: " << *interestHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
-	
 	}
 
 
