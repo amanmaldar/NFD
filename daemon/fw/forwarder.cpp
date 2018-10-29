@@ -108,7 +108,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 	}			
 			
 	if (interestName_2.find("/ndn/metrics/reset") != std::string::npos) {
-		pm.clearNwMetrics(*nm);
+		pm.clearNwMetrics(&nm);
 	} 
 		
 
@@ -425,9 +425,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		"  hop count: " << *interestHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
 		
 		// update the global counters
-		ndnPerf::nInData++;
-		ndnPerf::fwdLatencyTag += *fwdLatencyTag;
-		ndnPerf::responseTime += responseTime;
+		nm.nInData++;
+		nm.fwdLatencyTag += *fwdLatencyTag;
+		nm.responseTime += responseTime;
  
 	}
 	
