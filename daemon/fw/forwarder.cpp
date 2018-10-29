@@ -39,10 +39,13 @@ namespace nfd {
 
 //NFD_LOG_INIT(Forwarder);
 NFD_LOG_INIT(TrackLat);
+/*
 time::milliseconds timestamp = time::toUnixTimestamp(time::system_clock::now());
 auto timeNow = timestamp.count();
-uint64_t fwdDiff;
+
 uint64_t sentTimeGlobal;
+*/
+uint64_t fwdDiff;
 
 
 static Name
@@ -95,6 +98,19 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
                 " interest=" << interest.getName());
   interest.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
   ++m_counters.nInInterests;
+	auto interestName_2 = interest.getName().toUri();
+
+
+	if (interestName_2.find("/ndn/metrics/show") != std::string::npos) {
+		ndnPerf::printMetrics(show);
+	}			
+			
+	if (interestName_2.find("/ndn/metrics/reset") != std::string::npos) {
+		ndnPerf::printMetrics(reset);
+	} 
+		
+
+	
 
   // /localhost scope control
   bool isViolatingLocalhost = inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL &&
@@ -251,6 +267,11 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	auto responseTime = timeNow - *interestBirthTag;
 	NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << \
 	"  hop count: " << *interestHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
+	
+	// update the global counters
+	ndnPerf::nInData++;
+	ndnPerf::fwdLatencyTag += *fwdLatencyTag;
+	ndnPerf::responseTime += responseTime;
 	}
 
 
@@ -320,7 +341,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     this->onDataUnsolicited(inFace, data);
     return;
   }
-
+	
+	
     // Read the newTag. It is set to zero if not present by link layer
  	auto newDataTag = data.getTag<lp::newDataTag>();
 	auto interestHopsTag = data.getTag<lp::interestHopsTag>();
@@ -399,6 +421,11 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		auto responseTime = timeNow - *interestBirthTag;
 		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << \
 		"  hop count: " << *interestHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
+		
+		// update the global counters
+		ndnPerf::nInData++;
+		ndnPerf::fwdLatencyTag += *fwdLatencyTag;
+		ndnPerf::responseTime += responseTime;
  
 	}
 	
