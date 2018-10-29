@@ -8,15 +8,13 @@ namespace cs {
 		std::ofstream ofs;
 
 		void perfMeasure::printNwMetrics(networkMetrics nm){
-		
+			
+			float art = 0;
+			float afd = 0;
 			if (nm.nInData != 0)
 			{
-				auto art = nm.responseTime/nm.nInData ;
-				auto afd = nm.fwdLatencyTag/nm.nInData ;
-			}
-			else{
-				auto art = 0;
-				auto afd = 0;
+				art = nm.responseTime/nm.nInData ;
+				afd = nm.fwdLatencyTag/nm.nInData ;
 			}
 			
 		
