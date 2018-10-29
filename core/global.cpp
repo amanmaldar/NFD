@@ -5,7 +5,7 @@ namespace nfd {
 namespace cs {
 
 
-	static void ndnPerf::printMetrics(std::string action){
+		void ndnPerf::printMetrics(std::string action){
 		
 		if (!action.compare("reset")){
 			ndnPerf::responseTime = 0;
@@ -23,7 +23,7 @@ namespace cs {
 					<< "    AvgFwdLatency=" << ndnPerf::fwdLatencyTag/ndnPerf::nInData <<"\n"
 					<< "    TotalInDataPackets=" << ndnPerf::nInData << "\n";
 			ofs.close();
-}
+	}
 
 
 }

@@ -22,7 +22,7 @@ class ndnPerf{
 		static uint64_t fwdLatencyTag;
 		static uint64_t nInData;
 	public:
-	static void printMetrics(std::string action);
+		static void printMetrics(std::string action);
 };
 	
 	
