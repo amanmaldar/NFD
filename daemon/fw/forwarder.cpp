@@ -109,6 +109,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 			
 	if (interestName_2.find("/ndn/metrics/reset") != std::string::npos) {
 		pm.clearNwMetrics(nm);
+		pm.printNwMetrics(nm);
 	} 
 		
 
@@ -263,17 +264,17 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 		NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 	
 		// response time
-	auto timestamp = time::toUnixTimestamp(time::system_clock::now());
-	auto timeNow = timestamp.count();
-	interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
-	auto responseTime = timeNow - *interestBirthTag;
-	NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << \
-	"  hop count: " << *interestHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
+		auto timestamp = time::toUnixTimestamp(time::system_clock::now());
+		auto timeNow = timestamp.count();
+		interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
+		auto responseTime = timeNow - *interestBirthTag;
+		NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << \
+		"  hop count: " << *interestHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
 	
-	// update the global counters
-	nm.nInData++;
-	nm.fwdLatencyTag += *fwdLatencyTag;
-	nm.responseTime += *responseTime;
+		// update the global counters
+		nm.nInData++;
+		nm.fwdLatencyTag += *fwdLatencyTag;
+		nm.responseTime += responseTime;
 	}
 
 

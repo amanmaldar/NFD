@@ -9,7 +9,7 @@ namespace cs {
 			const char *path="/home/lenovo/Dropbox/Thesis/Logs/minindn3/status_2.txt";
 			std::ofstream ofs;
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "CS_Metrics\n"
+				ofs	<< "Network_Metrics\n"
 					<< "    TotalRespTime="<< nm.responseTime << "\n"
 					<< "    AvgRespTime="<< nm.responseTime/nm.nInData << "\n"
 					<< "    TotalFwdLatency=" << nm.fwdLatencyTag <<"\n"
