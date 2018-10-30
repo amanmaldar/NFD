@@ -107,6 +107,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 		nfd::cs::nm2.t = std::chrono::high_resolution_clock::now();
 		pm.printNwMetrics(nm);
 		return;
+		
 	}			
 			
 	if (interestName_2.find("/ndn/metrics/zero") != std::string::npos) {
