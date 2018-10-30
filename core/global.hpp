@@ -1,5 +1,5 @@
-#ifndef NFD_DAEMON_FW_GLOBAL_HPP
-#define NFD_DAEMON_FW_GLOBAL_HPP
+#ifndef NFD_CORE_GLOBAL_HPP
+#define NFD_CORE_GLOBAL_HPP
 
 #include "stdint.h"
 #include <ctime> 
