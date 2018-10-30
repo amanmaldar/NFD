@@ -17,7 +17,7 @@ namespace cs {
 		uint64_t responseTime;
 		uint64_t fwdLatencyTag;
 		uint64_t nInData;
-		float t;
+		int t;
 	}nm2;
 		
 	class perfMeasure{

@@ -37,6 +37,7 @@
 
 nfd::cs::perfMeasure pm;
 nfd::cs::networkMetrics nm;
+int helloWorld = 1;
 namespace nfd {
 
 //NFD_LOG_INIT(Forwarder);
@@ -104,7 +105,8 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
 
 	if (interestName_2.find("/ndn/metrics/show") != std::string::npos) {
-		nfd::cs::nm2.t = std::chrono::high_resolution_clock::now();
+		nfd::cs::nm2.t = helloWorld;
+		helloWorld+= 5;
 		pm.printNwMetrics(nm);
 		return;
 		
