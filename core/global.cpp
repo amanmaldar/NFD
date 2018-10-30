@@ -4,6 +4,10 @@ using namespace std;
 namespace nfd {
 namespace cs {
 
+		void sayHello(){
+			std::cout << "hello world" << std::endl;
+		}
+
 		const char *path="/home/lenovo/Dropbox/Thesis/Logs/minindn3/status_2.txt";
 		std::ofstream ofs;
 

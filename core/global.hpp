@@ -17,15 +17,16 @@ namespace cs {
 		uint64_t responseTime;
 		uint64_t fwdLatencyTag;
 		uint64_t nInData;
-		int t;
+
 	};
+	void sayHello();
 		
 	class perfMeasure{
 	
 	public:
 		void printNwMetrics(networkMetrics nm);
 		networkMetrics clearNwMetrics(networkMetrics &nm);
-		networkMetrics nm2;
+
 	};
 
 
