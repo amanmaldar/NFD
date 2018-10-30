@@ -18,13 +18,14 @@ namespace cs {
 		uint64_t fwdLatencyTag;
 		uint64_t nInData;
 		int t;
-	}nm2;
+	};
 		
 	class perfMeasure{
 	
 	public:
 		void printNwMetrics(networkMetrics nm);
 		networkMetrics clearNwMetrics(networkMetrics &nm);
+		networkMetrics nm2;
 	};
 
 

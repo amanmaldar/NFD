@@ -25,7 +25,7 @@ namespace cs {
 					<< "    TotalFwdLatency=" << nm.fwdLatencyTag <<"\n"
 					<< "    AvgFwdLatency=" << afd <<"\n"
 					<< "    TotalInDataPackets=" << nm.nInData << "\n"
-					<< "	time=" << nm2.t << "\n";					
+					<< "	time=" << nm.nm2.t << "\n";					
 			ofs.close();
 		
 		}
