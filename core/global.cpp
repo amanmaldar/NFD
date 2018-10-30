@@ -4,12 +4,16 @@ using namespace std;
 namespace nfd {
 namespace cs {
 
-		void sayHello(){
-			std::cout << "hello world" << std::endl;
-		}
+	
 
 		const char *path="/home/lenovo/Dropbox/Thesis/Logs/minindn3/status_2.txt";
 		std::ofstream ofs;
+		
+		void sayHello(){
+			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
+			std::cout << "hello world" << std::endl;
+			ofs.close();
+		}
 
 		void perfMeasure::printNwMetrics(networkMetrics nm){
 			
