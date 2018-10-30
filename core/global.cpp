@@ -11,7 +11,7 @@ namespace cs {
 		
 		void sayHello(){
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-			std::cout << "hello world" << std::endl;
+			ofs<< "hello world" << "\n";
 			ofs.close();
 		}
 
