@@ -408,7 +408,7 @@ GenericLinkService::decodeInterest(const Block& netPkt, const lp::Packet& firstP
     interest->setTag(make_shared<lp::interestBirthTag>(firstPkt.get<lp::interestBirthTagField>()));
   }
   else {
-  	auto timestamp = time::toUnixTimestamp(time::system_clock::now());
+  	auto timestamp = time::toUnixTimestamp(time::high_resolution_clock::now());
 	auto timeNow = timestamp.count();
 	interest->setTag(make_shared<lp::interestBirthTag>(timeNow));
   }
@@ -417,7 +417,7 @@ GenericLinkService::decodeInterest(const Block& netPkt, const lp::Packet& firstP
    	// do nothing, New entry for each NFD pit
   }
   else{
-    auto timestamp = time::toUnixTimestamp(time::system_clock::now());
+    auto timestamp = time::toUnixTimestamp(time::high_resolution_clock::now());
 	auto timeNow = timestamp.count();
 	interest->setTag(make_shared<lp::interestArrivalTimeTag>(timeNow));
   }

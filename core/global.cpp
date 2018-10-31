@@ -8,10 +8,21 @@ namespace cs {
 
 		const char *path="/home/lenovo/Dropbox/Thesis/Logs/minindn3/status_2.txt";
 		std::ofstream ofs;
+		double wtime()
+		{
+			double time[2];	
+			struct timeval time1;
+			gettimeofday(&time1, NULL);
+
+			time[0]=time1.tv_sec;
+			time[1]=time1.tv_usec;
+
+			return time[0]+time[1]*1.0e-6;
+		}
 		
 		void sayHello(){
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-			ofs<< "hello world" << "\n";
+				ofs << "	hello world" << "\n";
 			ofs.close();
 		}
 

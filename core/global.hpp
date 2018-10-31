@@ -20,6 +20,7 @@ namespace cs {
 
 	};
 	void sayHello();
+	double wtime();
 		
 	class perfMeasure{
 	

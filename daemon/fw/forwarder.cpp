@@ -269,7 +269,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 		//NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 	
 		// response time
-		auto timestamp = time::toUnixTimestamp(time::system_clock::now());
+		auto timestamp = time::toUnixTimestamp(time::high_resolution_clock::now());
 		auto timeNow = timestamp.count();
 		interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
 		auto responseTime = timeNow - *interestBirthTag;
@@ -427,7 +427,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		//NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 		
 		// response time
-		auto timestamp = time::toUnixTimestamp(time::system_clock::now());
+		auto timestamp = time::toUnixTimestamp(time::high_resolution_clock::now());
 		auto timeNow = timestamp.count();
 		interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
 		auto responseTime = timeNow - *interestBirthTag;
