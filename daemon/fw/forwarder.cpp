@@ -286,6 +286,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 			NFD_LOG_DEBUG("cshits non_local" << data.getName());
 		}
 	}
+	
 
 
   pitEntry->isSatisfied = true;
