@@ -269,8 +269,9 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 		//NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 	
 		// response time
-		auto timestamp = time::toUnixTimestamp(std::chrono::high_resolution_clock::now());
-		auto timeNow = timestamp.count();
+		//auto timestamp = time::toUnixTimestamp(std::chrono::high_resolution_clock::now());
+		//auto timeNow = timestamp.count();
+		auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
 		interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
 		auto responseTime = timeNow - *interestBirthTag;
 		NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << \
@@ -427,8 +428,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		//NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
 		
 		// response time
-		auto timestamp = time::toUnixTimestamp(std::chrono::high_resolution_clock::now());
-		auto timeNow = timestamp.count();
+//		auto timestamp = time::toUnixTimestamp(std::chrono::high_resolution_clock::now());
+		//auto timeNow = timestamp.count();
+		auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
+		
 		interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
 		auto responseTime = timeNow - *interestBirthTag;
 		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << \
