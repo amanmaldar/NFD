@@ -399,7 +399,7 @@ GenericLinkService::decodeInterest(const Block& netPkt, const lp::Packet& firstP
 	auto a = firstPkt.get<lp::intProcessingTimeTagField>(); 	// get existing value
 	auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
 	auto b = firstPkt.get<lp::intArrivalTimeTagField>();
-	interest->setTag(make_shared<lp::intProcessingTimeTag>(*a + (*timeNow-*b));
+	interest->setTag(make_shared<lp::intProcessingTimeTag>(a + (timeNow-b));
   }
   else{
 	auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
