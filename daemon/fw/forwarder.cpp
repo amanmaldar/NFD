@@ -249,7 +249,10 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	// Always do these for CS Hit at Producer
 	auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
 	data.setTag(make_shared<lp::dataProduceTimeTag>(timeNow));
-	
+
+	intHopsTag = interestInPit.getTag<lp::intHopsTag>();
+	data.setTag(make_shared<lp::intHopsTag>(*intHopsTag));
+
 	
   	// check if we are back to consumer
 	auto intHopsTag = interestInPit.getTag<lp::intHopsTag>();
@@ -353,14 +356,12 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	
     // Read the dataProduceTimeTag. It is null unless set by producer
  	auto intHopsTag = data.getTag<lp::intHopsTag>();
-	//auto intArrivalTimeTag = data.getTag<lp::intArrivalTimeTag>();
 	auto intProcessingTimeTag = data.getTag<lp::intProcessingTimeTag>();
 	auto dataProduceTimeTag = data.getTag<lp::dataProduceTimeTag>();
 
 
 	// For forwarding nodes newData should be set to zero
 	data.removeTag<lp::intHopsTag>();
-	//data.removeTag<lp::intArrivalTimeTag>();
 	data.removeTag<lp::intProcessingTimeTag>();
 	data.removeTag<lp::dataProduceTimeTag>();
 
@@ -372,9 +373,6 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	if(intHopsTag != nullptr){
 		data.setTag(make_shared<lp::intHopsTag>(*intHopsTag));	
 	}
-/*	if(intArrivalTimeTag != nullptr){
-		data.setTag(make_shared<lp::intArrivalTimeTag>(*intArrivalTimeTag));	
-	}*/
 	if(intProcessingTimeTag != nullptr){
 		data.setTag(make_shared<lp::intProcessingTimeTag>(*intProcessingTimeTag));	
 	}

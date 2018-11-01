@@ -382,13 +382,6 @@ GenericLinkService::decodeInterest(const Block& netPkt, const lp::Packet& firstP
 	interest->setTag(make_shared<lp::intHopsTag>(1));
   }
  
-  if (firstPkt.has<lp::intArrivalTimeTagField>()) { // always false
-   	// do nothing, New entry for each NFD pit
-  }
-  else{
-	auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
-	interest->setTag(make_shared<lp::intArrivalTimeTag>(timeNow));
-  }
 
 	// during onOutgoingInterest do now - incomingTime  and put result in processing time
   if (firstPkt.has<lp::intProcessingTimeTagField>()) {
@@ -397,7 +390,23 @@ GenericLinkService::decodeInterest(const Block& netPkt, const lp::Packet& firstP
   else {
 	interest->setTag(make_shared<lp::intProcessingTimeTag>(0));
   }
- 
+  
+  if (firstPkt.has<lp::intArrivalTimeTagField>()) { // always false
+   	// do nothing, New entry for each NFD pit
+	
+			
+	// This code will trigger on outgoing interest
+	auto a = firstPkt.get<lp::intProcessingTimeTagField>(); 	// get existing value
+	auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
+	auto b = firstPkt.get<lp::intArrivalTimeTagField>();
+	interest->setTag(make_shared<lp::intProcessingTimeTag>(*a + (*timeNow-*b));
+  }
+  else{
+	auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
+	interest->setTag(make_shared<lp::intArrivalTimeTag>(timeNow));
+  }
+
+
   
   if (firstPkt.has<lp::NextHopFaceIdField>()) {
     if (m_options.allowLocalFields) {
