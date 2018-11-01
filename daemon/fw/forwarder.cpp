@@ -250,7 +250,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
 	data.setTag(make_shared<lp::dataProduceTimeTag>(timeNow));
 
-	intHopsTag = interestInPit.getTag<lp::intHopsTag>();
+	auto intHopsTag = interestInPit.getTag<lp::intHopsTag>();
 	data.setTag(make_shared<lp::intHopsTag>(*intHopsTag));
 
 	
