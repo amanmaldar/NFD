@@ -266,15 +266,15 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 		timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
 		auto responseTime = timeNow - *intArrivalTimeTag;
 		
-		NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatency << \
-		"  hop count: " << *intHopsTag << " RespTime " <<  *responseTime <<  "  " << data.getName());
+		NFD_LOG_DEBUG("cshits results fwd_latency: " << fwdLatency << \
+		"  hop count: " << *intHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
 	
 		// update the global counters
 		// Packets come from local face for on content store miss. 
 		if (inFace.getScope() == ndn::nfd::FACE_SCOPE_LOCAL){
 			nm.nInData++;
-			nm.fwdLatencyTag += *fwdLatency;
-			nm.responseTime += *responseTime;
+			nm.fwdLatencyTag += fwdLatency;
+			nm.responseTime += responseTime;
 			NFD_LOG_DEBUG("cshits non_local" << data.getName());
 		}
 	}
