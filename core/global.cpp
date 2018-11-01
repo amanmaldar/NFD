@@ -30,14 +30,15 @@ namespace cs {
 			
 		
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "Network_Metrics\n"
-					<< "    TotalRespTime="<< nm.responseTime << "\n"
-					<< "    AvgRespTime="<< art << "\n"
-					<< "    TotalFwdLatency=" << nm.fwdLatencyTag <<"\n"
-					<< "    AvgFwdLatency=" << afd <<"\n"
-					<< "    TotalProcessLatOnPath=" << nm.processLat << "\n"
-					<< "    AvgProcessLatOnPath="<< apl << "\n"
-					<< "    TotalInDataPackets=" << nm.nInData << "\n";
+				ofs	<< "						Network_Metrics\n"
+					<< 							setprecision(2) << "\n"; 
+					<< "    		Total_Exp_Resp_Time=" << nm.responseTime/1000 << "mS\n"
+					<< "       	   Per_Packet_Resp_Time=" << art/1000 << "mS\n"
+					<< "	      	  Total_Exp_Fwd_Lat=" << nm.fwdLatencyTag/1000 <<"mS\n"
+					<< "    		Per_Packet_Fwd_Late=" << afd/1000 <<"mS\n"
+					<< "    	Total_ProcessLat_OnPath=" << nm.processLat/1000 << "mS\n"
+					<< "   Per_Packet_ProcessLat_OnPath=" << apl/1000 << "mS\n"
+					<< "   	 	   Total_InData_Packets=" << nm.nInData/1000 << "mS\n";
 					
 			ofs.close();
 		
@@ -47,6 +48,7 @@ namespace cs {
 			nm.responseTime = 0;
 			nm.fwdLatencyTag = 0; 
 			nm.nInData = 0;
+			nm.processLat = 0;
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "Network_Metrics Reset\n";
 			ofs.close();
