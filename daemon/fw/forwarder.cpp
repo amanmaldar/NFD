@@ -395,7 +395,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	
     auto interestInPit = pitEntry->getInterest();
 	auto processLat = data.getTag<lp::intProcessingTimeTag>();			
-
+	auto intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();	// handle
 
 	// This happens at Producer
 	if (dataProduceTimeTag  == nullptr) {
@@ -405,7 +405,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		
 		// Processing Latency
 		auto intProcessingTimeTag = interestInPit.getTag<lp::intProcessingTimeTag>(); // existing
-		auto intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();			
+		intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();			
 		data.setTag(make_shared<lp::intProcessingTimeTag>(*intProcessingTimeTag + (timeNow - *intArrivalTimeTag) ));
 		
 		intHopsTag = interestInPit.getTag<lp::intHopsTag>();
