@@ -20,6 +20,7 @@ namespace cs {
 			
 			float art = 0;
 			float afd = 0;
+			float apl = 0;
 			if (nm.nInData != 0)
 			{
 				art = nm.responseTime/nm.nInData ;
