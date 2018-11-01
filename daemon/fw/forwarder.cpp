@@ -276,7 +276,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 		auto responseTime = timeNow - *intArrivalTimeTag;
 		
 		NFD_LOG_DEBUG("cshits results fwd_latency: " << fwdLatency << \
-		"  hop count: " << *intHopsTag << " RespTime " <<  responseTime <<  "  processLat: " << processLat << " " << data.getName());
+		"  hop count: " << *intHopsTag << " RespTime " <<  responseTime <<  "  processLat: " << *processLat << " " << data.getName());
 	
 		// update the global counters
 		// Packets come from local face for on content store miss. 
@@ -410,7 +410,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		
 		intHopsTag = interestInPit.getTag<lp::intHopsTag>();
 		data.setTag(make_shared<lp::intHopsTag>(*intHopsTag));
-		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  hop count " <<  *intHopsTag  << "  processLat: " << processLat << " ");		
+		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  hop count " <<  *intHopsTag  << "  processLat: " << *processLat << " ");		
 
 	}
   
@@ -432,7 +432,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		auto responseTime = timeNow - *intArrivalTimeTag;
 		
 		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << fwdLatency << \
-		"  hop count: " << *intHopsTag << " RespTime " <<  responseTime <<  " processLat: " << processLat << " " << data.getName());
+		"  hop count: " << *intHopsTag << " RespTime " <<  responseTime <<  " processLat: " << *processLat << " " << data.getName());
 		
 		// update the global counters
 		if (inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL){
