@@ -250,7 +250,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
 	data.setTag(make_shared<lp::dataProduceTimeTag>(timeNow));
 	
-
+	/*
   	// check if we are back to consumer
 	auto intHopsTag = interestInPit.getTag<lp::intHopsTag>();
 	auto dataProduceTimeTag = data.getTag<lp::dataProduceTimeTag>();
@@ -279,6 +279,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 			NFD_LOG_DEBUG("cshits non_local" << data.getName());
 		}
 	}
+	*/
 
 
   pitEntry->isSatisfied = true;
@@ -386,7 +387,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
  
     auto& pitEntry = pitMatches.front();
 	
-	
+	/*
     auto interestInPit = pitEntry->getInterest();
 
 	// This happens at Producer
@@ -426,7 +427,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 			NFD_LOG_DEBUG("onincomingdata non_local" << data.getName());
 		}
 	}
-	
+	*/
 	
     NFD_LOG_DEBUG("onIncomingData matching=" << pitEntry->getName());  
 
