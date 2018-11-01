@@ -468,6 +468,10 @@ GenericLinkService::decodeData(const Block& netPkt, const lp::Packet& firstPkt)
     data->setTag(make_shared<lp::intHopsTag>(firstPkt.get<lp::intHopsTagField>()));
   }
   
+     if (firstPkt.has<lp::intProcessingTimeTagField>()) {
+    data->setTag(make_shared<lp::intProcessingTimeTag>(firstPkt.get<lp::intProcessingTimeTagField>()));
+  }
+  
   
  
 

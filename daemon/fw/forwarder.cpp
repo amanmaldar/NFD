@@ -106,7 +106,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
 	if (interestName_2.find("/ndn/metrics/show") != std::string::npos) {
 		pm.printNwMetrics(nm);
-		nfd::cs::sayHello();
+		//nfd::cs::sayHello();
 		return;
 		
 	}			
@@ -253,6 +253,11 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	auto intHopsTag = interestInPit.getTag<lp::intHopsTag>();
 	data.setTag(make_shared<lp::intHopsTag>(*intHopsTag));
 
+	// Processing Latency
+	auto intProcessingTimeTag = interestInPit.getTag<lp::intProcessingTimeTag>(); // existing
+	auto intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();			
+	data.setTag(make_shared<lp::intProcessingTimeTag>(*intProcessingTimeTag + (timeNow - *intArrivalTimeTag) ));
+	auto processLat = data.getTag<lp::intProcessingTimeTag>();			
 	
   	// check if we are back to consumer
 	intHopsTag = interestInPit.getTag<lp::intHopsTag>();
@@ -263,7 +268,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	    intHopsTag = data.getTag<lp::intHopsTag>();
 		
 		//Forwarding Latency
-		auto intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();
+		intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();
 		auto fwdLatency = *dataProduceTimeTag - *intArrivalTimeTag;
 		
 		// Response Time
@@ -271,7 +276,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 		auto responseTime = timeNow - *intArrivalTimeTag;
 		
 		NFD_LOG_DEBUG("cshits results fwd_latency: " << fwdLatency << \
-		"  hop count: " << *intHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
+		"  hop count: " << *intHopsTag << " RespTime " <<  responseTime <<  "  processLat: " << processLat << " " << data.getName());
 	
 		// update the global counters
 		// Packets come from local face for on content store miss. 
@@ -279,6 +284,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 			nm.nInData++;
 			nm.fwdLatencyTag += fwdLatency;
 			nm.responseTime += responseTime;
+			nm.processLat += processLat;
 			NFD_LOG_DEBUG("cshits non_local" << data.getName());
 		}
 	}
@@ -388,6 +394,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	
 	
     auto interestInPit = pitEntry->getInterest();
+	auto processLat = data.getTag<lp::intProcessingTimeTag>();			
+
 
 	// This happens at Producer
 	if (dataProduceTimeTag  == nullptr) {
@@ -395,21 +403,28 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
 		data.setTag(make_shared<lp::dataProduceTimeTag>(timeNow));
 		
+		// Processing Latency
+		auto intProcessingTimeTag = interestInPit.getTag<lp::intProcessingTimeTag>(); // existing
+		auto intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();			
+		data.setTag(make_shared<lp::intProcessingTimeTag>(*intProcessingTimeTag + (timeNow - *intArrivalTimeTag) ));
+		
 		intHopsTag = interestInPit.getTag<lp::intHopsTag>();
 		data.setTag(make_shared<lp::intHopsTag>(*intHopsTag));
-		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  hop count " <<  *intHopsTag);		
+		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  hop count " <<  *intHopsTag  << "  processLat: " << processLat << " ");		
+
 	}
   
 
     // check if we are back to consumer
 	intHopsTag = interestInPit.getTag<lp::intHopsTag>();
 	dataProduceTimeTag = data.getTag<lp::dataProduceTimeTag>();
+	
 	if ((*intHopsTag  == 1) & (dataProduceTimeTag != nullptr)) { 
 		// Hop Count
 	    intHopsTag = data.getTag<lp::intHopsTag>();
 		
 		//Forwarding Latency
-		auto intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();
+		intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();
 		auto fwdLatency = *dataProduceTimeTag - *intArrivalTimeTag;
 		
 		// Response Time
@@ -417,13 +432,14 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		auto responseTime = timeNow - *intArrivalTimeTag;
 		
 		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << fwdLatency << \
-		"  hop count: " << *intHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
+		"  hop count: " << *intHopsTag << " RespTime " <<  responseTime <<  " processLat: " << processLat << " " << data.getName());
 		
 		// update the global counters
 		if (inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL){
 			nm.nInData++;
 			nm.fwdLatencyTag += fwdLatency;
 			nm.responseTime += responseTime;
+			nm.processLat + = processLat;
 			NFD_LOG_DEBUG("onincomingdata non_local" << data.getName());
 		}
 	}

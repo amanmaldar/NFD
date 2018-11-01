@@ -17,6 +17,7 @@ namespace cs {
 		uint64_t responseTime;
 		uint64_t fwdLatencyTag;
 		uint64_t nInData;
+		uint64_t processLat;
 
 	};
 	void sayHello();

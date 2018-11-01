@@ -8,19 +8,9 @@ namespace cs {
 
 		const char *path="/home/lenovo/Dropbox/Thesis/Logs/minindn3/status_2.txt";
 		std::ofstream ofs;
-		double wtime()
-		{
-			double time[2];	
-			struct timeval time1;
-			gettimeofday(&time1, NULL);
 
-			time[0]=time1.tv_sec;
-			time[1]=time1.tv_usec;
-
-			return time[0]+time[1]*1.0e-6;
-		}
-		
 		void sayHello(){
+		return;
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs << "	hello world" << "\n";
 			ofs.close();
@@ -34,6 +24,7 @@ namespace cs {
 			{
 				art = nm.responseTime/nm.nInData ;
 				afd = nm.fwdLatencyTag/nm.nInData ;
+				apl = nm.processLat/nm.nInData ;
 			}
 			
 		
@@ -43,6 +34,8 @@ namespace cs {
 					<< "    AvgRespTime="<< art << "\n"
 					<< "    TotalFwdLatency=" << nm.fwdLatencyTag <<"\n"
 					<< "    AvgFwdLatency=" << afd <<"\n"
+					<< "    TotalProcessLatOnPath=" << nm.processLat << "\n";
+					<< "    AvgProcessLatOnPath="<< apl << "\n";
 					<< "    TotalInDataPackets=" << nm.nInData << "\n";
 					
 			ofs.close();
