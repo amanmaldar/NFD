@@ -247,46 +247,37 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	auto interestInPit = pitEntry->getInterest();
 
 	// Always do these for CS Hit at Producer
-	data.setTag(make_shared<lp::newDataTag>(1));
-		
-	auto interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
-	auto interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
- 		
-	auto fwdDiff = *interestArrivalTimeTag - *interestBirthTag;
-	data.setTag(make_shared<lp::fwdLatencyTag>(fwdDiff));	  
-		
-	auto interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
-	data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
-	NFD_LOG_DEBUG("onincomingdata csfull data: " << data.getName() << "  " << fwdDiff << "  hop count: " << *interestHopsTag );		
-	NFD_LOG_DEBUG("cshits local" << data.getName());
-  
-    // check if we are back to consumer
-	interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
-	auto newDataTag = data.getTag<lp::newDataTag>();
-	if ((*newDataTag  == 1) & (*interestHopsTag == 1)) { 
-	    interestHopsTag = data.getTag<lp::interestHopsTag>();
-		auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
-		//NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
+	auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
+	data.setTag(make_shared<lp::dataProduceTimeTag>(timeNow));
 	
-		// response time
-		//auto timestamp = time::toUnixTimestamp(std::chrono::high_resolution_clock::now());
-		//auto timeNow = timestamp.count();
-		auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
-		interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
-		auto responseTime = timeNow - *interestBirthTag;
-		NFD_LOG_DEBUG("cshits results fwd_latency: " << *fwdLatencyTag << \
-		"  hop count: " << *interestHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
+
+  	// check if we are back to consumer
+	auto intHopsTag = interestInPit.getTag<lp::intHopsTag>();
+	auto dataProduceTimeTag = data.getTag<lp::dataProduceTimeTag>();
+ 	
+	if ((*intHopsTag  == 1) & (dataProduceTimeTag != nullptr)) { 
+		// Hop Count
+	    intHopsTag = data.getTag<lp::intHopsTag>();
+		
+		//Forwarding Latency
+		auto intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();
+		auto fwdLatency = *dataProduceTimeTag - *intArrivalTimeTag;
+		
+		// Response Time
+		timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
+		auto responseTime = timeNow - *intArrivalTimeTag;
+		
+		NFD_LOG_DEBUG("cshits results fwd_latency: " << fwdLatency << \
+		"  hop count: " << *intHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
 	
 		// update the global counters
 		// Packets come from local face for on content store miss. 
 		if (inFace.getScope() == ndn::nfd::FACE_SCOPE_LOCAL){
 			nm.nInData++;
-			nm.fwdLatencyTag += *fwdLatencyTag;
+			nm.fwdLatencyTag += fwdLatency;
 			nm.responseTime += responseTime;
 			NFD_LOG_DEBUG("cshits non_local" << data.getName());
 		}
-	}
-	
 
 
   pitEntry->isSatisfied = true;
@@ -357,43 +348,37 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   }
 	
 	
-    // Read the newTag. It is set to zero if not present by link layer
- 	auto newDataTag = data.getTag<lp::newDataTag>();
-	auto interestHopsTag = data.getTag<lp::interestHopsTag>();
-	auto fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
-	auto interestBirthTag = data.getTag<lp::interestBirthTag>();
-	auto interestArrivalTimeTag = data.getTag<lp::interestArrivalTimeTag>();
+    // Read the dataProduceTimeTag. It is null unless set by producer
+ 	auto intHopsTag = data.getTag<lp::intHopsTag>();
+	auto intArrivalTimeTag = data.getTag<lp::intArrivalTimeTag>();
+	auto intProcessingTimeTag = data.getTag<lp::intProcessingTimeTag>();
+	auto dataProduceTimeTag = data.getTag<lp::dataProduceTimeTag>();
 
 
 	// For forwarding nodes newData should be set to zero
-	//data.setTag(make_shared<lp::newDataTag>(0));
-	data.removeTag<lp::newDataTag>();
-	data.removeTag<lp::interestHopsTag>();
-	data.removeTag<lp::fwdLatencyTag>();
-	data.removeTag<lp::interestBirthTag>();
-	data.removeTag<lp::interestArrivalTimeTag>();
+	data.removeTag<lp::intHopsTag>();
+	data.removeTag<lp::intArrivalTimeTag>();
+	data.removeTag<lp::intProcessingTimeTag>();
+	data.removeTag<lp::dataProduceTimeTag>();
 
 
     // CS insert
     m_cs.insert(data);
 
 	// Revert back to original tag value. Needed for forwarding.
-	if(newDataTag != nullptr){
-		data.setTag(make_shared<lp::newDataTag>(*newDataTag));	
+	if(intHopsTag != nullptr){
+		data.setTag(make_shared<lp::intHopsTag>(*intHopsTag));	
 	}
-	if(interestHopsTag != nullptr){
-		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));	
+	if(intArrivalTimeTag != nullptr){
+		data.setTag(make_shared<lp::intArrivalTimeTag>(*intArrivalTimeTag));	
 	}
-	if(fwdLatencyTag != nullptr){
-		data.setTag(make_shared<lp::fwdLatencyTag>(*fwdLatencyTag));	
+	if(intProcessingTimeTag != nullptr){
+		data.setTag(make_shared<lp::intProcessingTimeTag>(*intProcessingTimeTag));	
 	}
-	if(interestBirthTag != nullptr){
-		data.setTag(make_shared<lp::interestBirthTag>(*interestBirthTag));	
+	if(dataProduceTimeTag != nullptr){
+		data.setTag(make_shared<lp::dataProduceTimeTag>(*dataProduceTimeTag));	
 	}
-	if(interestArrivalTimeTag != nullptr){
-		data.setTag(make_shared<lp::interestArrivalTimeTag>(*interestArrivalTimeTag));	
-	}
-
+	
  // when only one PIT entry is matched, trigger strategy: after receive Data
   if (pitMatches.size() == 1) {
   
@@ -404,51 +389,41 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     auto interestInPit = pitEntry->getInterest();
 
 	// This happens at Producer
-	if (newDataTag  == nullptr) {
+	if (dataProduceTimeTag  == nullptr) {
 	    // copy the data from interest to data
-		data.setTag(make_shared<lp::newDataTag>(1));
+		auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
+		data.setTag(make_shared<lp::dataProduceTimeTag>(timeNow));
 		
-		interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
-		interestArrivalTimeTag = interestInPit.getTag<lp::interestArrivalTimeTag>();
- 		
-		auto fwdDiff = *interestArrivalTimeTag - *interestBirthTag;
-		data.setTag(make_shared<lp::fwdLatencyTag>(fwdDiff));	  
-		
-		interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
-		data.setTag(make_shared<lp::interestHopsTag>(*interestHopsTag));
-		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  " << fwdDiff << "  hop count " <<  *interestHopsTag);		
+		intHopsTag = interestInPit.getTag<lp::intHopsTag>();
+		data.setTag(make_shared<lp::intHopsTag>(*intHopsTag));
+		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  hop count " <<  *intHopsTag);		
 	}
   
 
     // check if we are back to consumer
-	interestHopsTag = interestInPit.getTag<lp::interestHopsTag>();
-	newDataTag = data.getTag<lp::newDataTag>();
-	if ((*newDataTag  == 1) & (*interestHopsTag == 1)) { 
-	    interestHopsTag = data.getTag<lp::interestHopsTag>();
-		fwdLatencyTag = data.getTag<lp::fwdLatencyTag>();
-		//NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << "  hop count: " << *interestHopsTag << "  " << data.getName());
+	intHopsTag = interestInPit.getTag<lp::intHopsTag>();
+	dataProduceTimeTag = data.getTag<lp::dataProduceTimeTag>();
+	if ((*intHopsTag  == 1) & (dataProduceTimeTag != nullptr)) { 
+		// Hop Count
+	    intHopsTag = data.getTag<lp::intHopsTag>();
 		
-		// response time
-//		auto timestamp = time::toUnixTimestamp(std::chrono::high_resolution_clock::now());
-		//auto timeNow = timestamp.count();
+		//Forwarding Latency
+		auto fwdLatency = *dataProduceTimeTag - *intArrivalTimeTag;
+		
+		// Response Time
 		auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
+		auto responseTime = timeNow - *intArrivalTimeTag;
 		
-		interestBirthTag = interestInPit.getTag<lp::interestBirthTag>();
-		auto responseTime = timeNow - *interestBirthTag;
-		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << *fwdLatencyTag << \
-		"  hop count: " << *interestHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
-		NFD_LOG_DEBUG("onincomingdata local" << data.getName());
-		
+		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << fwdLatency << \
+		"  hop count: " << *intHopsTag << " RespTime " <<  responseTime <<  "  " << data.getName());
 		
 		// update the global counters
 		if (inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL){
 			nm.nInData++;
-			nm.fwdLatencyTag += *fwdLatencyTag;
+			nm.fwdLatencyTag += fwdLatency;
 			nm.responseTime += responseTime;
 			NFD_LOG_DEBUG("onincomingdata non_local" << data.getName());
-
 		}
- 
 	}
 	
 	

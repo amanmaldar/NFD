@@ -126,54 +126,32 @@ GenericLinkService::doSendNack(const lp::Nack& nack)
 void
 GenericLinkService::encodeLpFields(const ndn::PacketBase& netPkt, lp::Packet& lpPacket)
 {
-// Copy the tags to data structure
-   // Add BirthTime to Interest
+	// Extract the Fields from Packets. Later DecodeInterest and DecodeData save tags to DS
 
-  shared_ptr<lp::interestBirthTag> tag1 = netPkt.getTag<lp::interestBirthTag>();
+  shared_ptr<lp::intHopsTag> tag1 = netPkt.getTag<lp::intHopsTag>();
   if (tag1 != nullptr) {
-    	lpPacket.add<lp::interestBirthTagField>(*tag1);   
+    	lpPacket.add<lp::intHopsTagField>(*tag1);   
   }
-
    
-  // Add Arrival Time to Interest to Store in PIT
-  // We do not forward this Tag. Each PIT has unique value of this for same name.
-   
-   /*
-   shared_ptr<lp::interestArrivalTimeTag> tag2 = netPkt.getTag<lp::interestArrivalTimeTag>();
-  if (tag2 != nullptr) {
-    lpPacket.add<lp::interestArrivalTimeTagField>(*tag2);
-  }
-  */
+  // Do not decode intArrivalTimeTag
+  // DecodeInterest adds Arrival Time to Interest to Store in PIT
+  // We do not forward this Tag. Each PIT has unique value of this for same name. 
   
-  
-  // Add Forwarding Latency to Data packet on the way back
-  
-  shared_ptr<lp::fwdLatencyTag> tag3 = netPkt.getTag<lp::fwdLatencyTag>();
+  shared_ptr<lp::intProcessingTimeTag> tag3 = netPkt.getTag<lp::intProcessingTimeTag>();
   if (tag3 != nullptr) {
-    lpPacket.add<lp::fwdLatencyTagField>(*tag3);
-  }
-   
-  // This tag is set=1 by producer when it starts to send data back to consumer.
-  // Producer checks if newDataTagField == 0 onIncomingData and sets to 1. This tag is carried along the path.
-  // OnIncomingData.. If newDataTag = 1 and in PIT interestHopTag == 0, we are back to source 
-  // Consumer should clear newDataTag=0
-  shared_ptr<lp::newDataTag> tag4 = netPkt.getTag<lp::newDataTag>();
-  if (tag4 != nullptr) {
-    lpPacket.add<lp::newDataTagField>(*tag4);
+    lpPacket.add<lp::intProcessingTimeTagField>(*tag3);
   }
  
-  
-  // Read interest hop counts from current node's PIT to check if data has reached back to source.
-  // Divide interest hop count by 2 to get actual hops
-    shared_ptr<lp::interestHopsTag> tag5 = netPkt.getTag<lp::interestHopsTag>();
-  if (tag5 != nullptr) { // increment only on interest path.
-    lpPacket.add<lp::interestHopsTagField>(*tag5);
-  }				
+  // This tag is set=timeNow by producer when it starts to send data back to consumer.
+  // Producer checks if dataProduceTimeTag == null onIncomingData and sets to timeNow. This tag is carried along the path.
+  // OnIncomingData.. If dataProduceTimeTag = hasValue and in PIT intHopsTag == 0, we are back to source 
+  // Consumer should delete dataProduceTimeTag 
+  shared_ptr<lp::dataProduceTimeTag> tag4 = netPkt.getTag<lp::dataProduceTimeTag>();
+  if (tag4 != nullptr) {
+    lpPacket.add<lp::dataProduceTimeTagField>(*tag4);
+  }
+ 
 
-
-  
-  
-  
   
   if (m_options.allowLocalFields) {
     shared_ptr<lp::IncomingFaceIdTag> incomingFaceIdTag = netPkt.getTag<lp::IncomingFaceIdTag>();
@@ -397,35 +375,29 @@ GenericLinkService::decodeInterest(const Block& netPkt, const lp::Packet& firstP
 
 // this is tag forwarding feature for interest
 
-  if (firstPkt.has<lp::interestHopsTagField>()) {
-  	interest->setTag(make_shared<lp::interestHopsTag>(firstPkt.get<lp::interestHopsTagField>() + 1));
+  if (firstPkt.has<lp::intHopsTagField>()) {
+  	interest->setTag(make_shared<lp::intHopsTag>(firstPkt.get<lp::intHopsTagField>() + 1));
   }  
   else {
-	interest->setTag(make_shared<lp::interestHopsTag>(1));
+	interest->setTag(make_shared<lp::intHopsTag>(1));
   }
-
-  
-  if (firstPkt.has<lp::interestBirthTagField>()) {
-    interest->setTag(make_shared<lp::interestBirthTag>(firstPkt.get<lp::interestBirthTagField>()));
-  }
-  else {
-//  	auto timestamp = time::toUnixTimestamp(std::chrono::high_resolution_clock::now());
-	//auto timeNow = timestamp.count();
-	auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
-	
-	interest->setTag(make_shared<lp::interestBirthTag>(timeNow));
-  }
-  
-  if (firstPkt.has<lp::interestArrivalTimeTagField>()) {
+ 
+  if (firstPkt.has<lp::intArrivalTimeTagField>()) { // always false
    	// do nothing, New entry for each NFD pit
   }
   else{
-    //auto timestamp = time::toUnixTimestamp(std::chrono::high_resolution_clock::now());
-	//auto timeNow = timestamp.count();
 	auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
-	
-	interest->setTag(make_shared<lp::interestArrivalTimeTag>(timeNow));
+	interest->setTag(make_shared<lp::intArrivalTimeTag>(timeNow));
   }
+
+	// during onOutgoingInterest do now - incomingTime  and put result in processing time
+  if (firstPkt.has<lp::intProcessingTimeTagField>()) {
+    interest->setTag(make_shared<lp::intProcessingTimeTag>(firstPkt.get<lp::intProcessingTimeTagField>()));
+  }
+  else {
+	interest->setTag(make_shared<lp::intProcessingTimeTag>(0));
+  }
+ 
   
   if (firstPkt.has<lp::NextHopFaceIdField>()) {
     if (m_options.allowLocalFields) {
@@ -478,16 +450,13 @@ GenericLinkService::decodeData(const Block& netPkt, const lp::Packet& firstPkt)
   auto data = make_shared<Data>(netPkt);
 	// this is tag forwarding feature for data
    // decode latencyTag
-  if (firstPkt.has<lp::fwdLatencyTagField>()) {
-    data->setTag(make_shared<lp::fwdLatencyTag>(firstPkt.get<lp::fwdLatencyTagField>()));
+  if (firstPkt.has<lp::dataProduceTimeTagField>()) {
+    data->setTag(make_shared<lp::dataProduceTimeTag>(firstPkt.get<lp::dataProduceTimeTagField>()));
   }
   
-    if (firstPkt.has<lp::newDataTagField>()) {
-    data->setTag(make_shared<lp::newDataTag>(firstPkt.get<lp::newDataTagField>()));
-  }
   
-    if (firstPkt.has<lp::interestHopsTagField>()) {
-    data->setTag(make_shared<lp::interestHopsTag>(firstPkt.get<lp::interestHopsTagField>()));
+    if (firstPkt.has<lp::intHopsTagField>()) {
+    data->setTag(make_shared<lp::intHopsTag>(firstPkt.get<lp::intHopsTagField>()));
   }
   
   
