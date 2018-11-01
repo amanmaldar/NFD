@@ -31,14 +31,14 @@ namespace cs {
 		
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "						Network_Metrics\n"
-					<< 							setprecision(2) << "\n"
-					<< "    		Total_Exp_Resp_Time=" << nm.responseTime/1000 << "mS\n"
-					<< "       	   Per_Packet_Resp_Time=" << art/1000 << "mS\n"
-					<< "	      	  Total_Exp_Fwd_Lat=" << nm.fwdLatencyTag/1000 <<"mS\n"
-					<< "    		Per_Packet_Fwd_Late=" << afd/1000 <<"mS\n"
-					<< "    	Total_ProcessLat_OnPath=" << nm.processLat/1000 << "mS\n"
-					<< "   Per_Packet_ProcessLat_OnPath=" << apl/1000 << "mS\n"
-					<< "   	 	   Total_InData_Packets=" << nm.nInData/1000 << "mS\n";
+					<< 							std::setprecision(2) << "\n"
+					<< "    		Total_Exp_Resp_Time = " << nm.responseTime/1000 <<" mS\n"
+					<< "       	   Per_Packet_Resp_Time = " << art/1000 <<" mS\n"
+					<< "	      	  Total_Exp_Fwd_Lat = " << nm.fwdLatencyTag/1000 <<" mS\n"
+					<< "    		Per_Packet_Fwd_Late = " << afd/1000 <<" mS\n"
+					<< "    	Total_ProcessLat_OnPath = " << nm.processLat/1000 <<" mS\n"
+					<< "   Per_Packet_ProcessLat_OnPath = " << apl/1000 << " mS\n"
+					<< "   	 	   Total_InData_Packets = " << nm.nInData << "\n";
 					
 			ofs.close();
 		
