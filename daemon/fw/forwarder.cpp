@@ -439,7 +439,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 			nm.nInData++;
 			nm.fwdLatencyTag += fwdLatency;
 			nm.responseTime += responseTime;
-			nm.processLat + = *processLat;
+			nm.processLat += *processLat;
 			NFD_LOG_DEBUG("onincomingdata non_local" << data.getName());
 		}
 	}
