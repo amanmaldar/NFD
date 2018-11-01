@@ -255,7 +255,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 
 	
   	// check if we are back to consumer
-	auto intHopsTag = interestInPit.getTag<lp::intHopsTag>();
+	intHopsTag = interestInPit.getTag<lp::intHopsTag>();
 	auto dataProduceTimeTag = data.getTag<lp::dataProduceTimeTag>();
  	
 	if ((*intHopsTag  == 1) & (dataProduceTimeTag != nullptr)) { 
