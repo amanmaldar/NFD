@@ -1,11 +1,12 @@
 #include "global.hpp"
+#include <ctime>
 
 using namespace std;
 namespace nfd {
 namespace cs {
 
 	
-
+		
 		const char *path="/home/lenovo/Dropbox/Thesis/Logs/minindn3/status_2.txt";
 		std::ofstream ofs;
 
@@ -28,9 +29,11 @@ namespace cs {
 				apl = nm.processLat/nm.nInData ;
 			}
 			
-		
+			 time_t now = time(0);
+			 char* dt = ctime(&now);
+   
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "\n						Network_Metrics\n"
+				ofs	<< "\n						Network_Metrics		Time:" << dt << \n"
 					<< 							fixed
 					<< "    		Total_Exp_Resp_Time = " << nm.responseTime/1000 <<" mS\n"
 					<< "       	   Per_Packet_Resp_Time = " << art/1000 <<" mS\n"
