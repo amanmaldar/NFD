@@ -58,7 +58,7 @@ namespace cs {
 		}
 		
 		void perfMeasure::printCsMetrics(csMetrics csm){
-		
+				ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "						\nDevice_Metrics\n"
 					<< 							std::setprecision(2)
 					<< "    				   nCS_Hits = " << csm.nCsHits <<"\n"	
@@ -68,7 +68,7 @@ namespace cs {
 					<< "  Per_Packet_csLookUp_Miss_Time = " << (csm.csTotalMissLat/csm.nCsMiss) <<" uS\n"
 					<< "       Total_csLookUp_Hit_Time  = " << csm.csTotalHitLat/1000 <<" mS\n"
 					<< "   Per_Packet_csLookUp_Hit_Time = " << (csm.csTotalHitLat/csm.nCsHits) <<" uS\n";	
-
+				ofs.close();
 		}
 		
 		csMetrics perfMeasure::clearCsMetrics(csMetrics &csm){

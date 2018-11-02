@@ -32,6 +32,7 @@
 
 nfd::cs::csMetrics csm;
 nfd::cs::perfMeasure pm_1;
+std::string interestName ("blank");
 namespace nfd {
 namespace cs {
 
@@ -148,7 +149,7 @@ Cs::find(const Interest& interest,
     match = this->findLeftmost(interest, first, last);
   }
 	// Read the interest name. It is used everywhere.
-	auto interestName = interest.getName().toUri();
+	interestName = interest.getName().toUri();
 
 	 if (match == last) {
 		t2 = std::chrono::high_resolution_clock::now();		// Stop timer = t2 = end CS search - Result Not Found
