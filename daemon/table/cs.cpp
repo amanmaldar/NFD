@@ -50,11 +50,11 @@ NDN_CXX_ASSERT_FORWARD_ITERATOR(Cs::const_iterator);
 //NFD_LOG_INIT(ContentStore);
 NFD_LOG_INIT(TrackLat);
 // declare a global start time const
-/*
+
 auto t1 = std::chrono::high_resolution_clock::now();
 auto t2 = std::chrono::high_resolution_clock::now();
 std::chrono::duration <double> diff;
-*/
+
 
 static unique_ptr<Policy>
 makeDefaultPolicy()
