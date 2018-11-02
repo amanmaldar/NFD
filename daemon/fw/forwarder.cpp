@@ -106,14 +106,14 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 	auto interestName_2 = interest.getName().toUri();
 
 
-	if (interestName_2.find("/ndn/metrics/show") != std::string::npos) {
+	if (interestName_2.find("ndnMetricsShow") != std::string::npos) {
 		pm.printNwMetrics(nm);
 		//nfd::cs::sayHello();
 		return;
 		
 	}			
 			
-	if (interestName_2.find("/ndn/metrics/zero") != std::string::npos) {
+	if (interestName_2.find("ndnMetricsZero") != std::string::npos) {
 		nm = pm.clearNwMetrics(nm);
 		return;
 	} 
