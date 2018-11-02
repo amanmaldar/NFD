@@ -81,6 +81,7 @@ namespace cs {
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "Device_Metrics Reset\n";
 			ofs.close();
+			return csm;
 		}
 
 
