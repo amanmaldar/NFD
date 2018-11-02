@@ -162,6 +162,7 @@ Cs::find(const Interest& interest,
   else {
     match = this->findLeftmost(interest, first, last);
   }
+	auto interestName = interest.getName().toUri();
  
 	 if (match == last) {
 		t2 = std::chrono::high_resolution_clock::now();		// Stop timer = t2 = end CS search - Result Not Found
@@ -173,18 +174,17 @@ Cs::find(const Interest& interest,
 
 		// Read the interest name. It is used everywhere.
 
-		auto interestName = interest.getName().toUri();
-
+	
 		NFD_LOG_DEBUG("printcs1 interest=" << interest.getName());
 
-		if ( interest.getName().find("nMetZero") != std::string::npos) {
+		if (interestName.find("/ndn/metrics/zero") != std::string::npos) {
 			csm = pm_1.clearCsMetrics(csm);
 			NFD_LOG_DEBUG("printcs2 interest=" << interest.getName());
 			return;
 
 		}			
 			
-		if (interest.getName().find("nMetShow") != std::string::npos) {
+		if (interestName.find("/ndn/metrics/show") != std::string::npos) {
 			csm.nCsMiss--;
 			pm_1.printCsMetrics(csm);
 			NFD_LOG_DEBUG("printcs3 interest=" << interest.getName());
