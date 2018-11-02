@@ -30,7 +30,7 @@ namespace cs {
 			
 		
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "/n						Network_Metrics\n"
+				ofs	<< "\n						Network_Metrics\n"
 					<< 							fixed
 					<< "    		Total_Exp_Resp_Time = " << nm.responseTime/1000 <<" mS\n"
 					<< "       	   Per_Packet_Resp_Time = " << art/1000 <<" mS\n"
@@ -60,7 +60,7 @@ namespace cs {
 		
 		void perfMeasure::printCsMetrics(csMetrics csm){
 				ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "/n						Device_Metrics\n"
+				ofs	<< "\n						Device_Metrics\n"
 					<< 							fixed
 					<< "    				   nCS_Hits = " << csm.nCsHits <<"\n"	
 					<< "    				   nCS_Miss = " << csm.nCsMiss <<"\n"

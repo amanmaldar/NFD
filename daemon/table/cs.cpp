@@ -165,12 +165,17 @@ Cs::find(const Interest& interest,
 	auto interestName = interest.getName().toUri();
  
 	 if (match == last) {
+		
+		
+		NFD_LOG_DEBUG("onContentStoreMiss interest=" << interest.getName() << "onContentStoreMissDiff=" << diff.count());
+		
+		// ignore nlsr packets
+		if (interestName.find("nlsr") == std::string::npos){
 		t2 = std::chrono::high_resolution_clock::now();		// Stop timer = t2 = end CS search - Result Not Found
 		diff = t2-t1;
-		NFD_LOG_DEBUG("onContentStoreMiss interest=" << interest.getName() << "onContentStoreMissDiff=" << diff.count());
-
 		csm.nCsMiss++;
-		csm.csTotalMissLat += diff.count();
+			csm.csTotalMissLat += diff.count();
+		}
 
 		// Read the interest name. It is used everywhere.
 
