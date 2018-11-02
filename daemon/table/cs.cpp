@@ -29,8 +29,17 @@
 
 #include <ndn-cxx/lp/tags.hpp>
 #include <ndn-cxx/util/concepts.hpp>
+// not all necessary
+#include <chrono>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <stdio.h>
+#include <boost/algorithm/string.hpp>
+#include <fstream>
+#include <vector>
 
-nfd::cs::csMetrics csm;
+nfd::cs::csMetrics csm = {0,0,0,0};
 nfd::cs::perfMeasure pm_1;
 //std::string interestName ("blank");
 namespace nfd {
@@ -134,23 +143,7 @@ Cs::find(const Interest& interest,
   t1 = std::chrono::high_resolution_clock::now();			// Start timer = t1 = begin CS search
 
 		// Read the interest name. It is used everywhere.
-	auto interestName = interest.getName().toUri();
 
-	NFD_LOG_DEBUG("printcs1 interest=" << interest.getName() );
-
-		if (interestName.find("/ndn/metrics/zero") != std::string::npos) {
-			csm = pm_1.clearCsMetrics(csm);
-			NFD_LOG_DEBUG("printcs2 interest=" << interest.getName() );
-			return;
-
-		}			
-			
-		if (interestName.find("/ndn/metrics/show") != std::string::npos) {
-			pm_1.printCsMetrics(csm);
-			NFD_LOG_DEBUG("printcs3 interest=" << interest.getName() );
-			return;
-
-		}
   bool isRightmost = interest.getChildSelector() == 1;
   NFD_LOG_DEBUG("find " << prefix << (isRightmost ? " R" : " L"));
 
@@ -176,6 +169,23 @@ Cs::find(const Interest& interest,
 		csm.nCsMiss++;
 		csm.csTotalMissLat += diff.count();
 		
+			auto interestName = interest.getName().toUri();
+
+		NFD_LOG_DEBUG("printcs1 interest=" << interest.getName() );
+
+		if (interestName.find("/ndn/metrics/zero") != std::string::npos) {
+			csm = pm_1.clearCsMetrics(csm);
+			NFD_LOG_DEBUG("printcs2 interest=" << interest.getName() );
+			return;
+
+		}			
+			
+		if (interestName.find("/ndn/metrics/show") != std::string::npos) {
+			pm_1.printCsMetrics(csm);
+			NFD_LOG_DEBUG("printcs3 interest=" << interest.getName() );
+			return;
+
+		}
 	
 
     missCallback(interest);
