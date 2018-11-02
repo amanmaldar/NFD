@@ -107,7 +107,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
 
 	if (interestName_2.find("/ndn/metrics/show") != std::string::npos) {
-		pm.printNwMetrics();
+		pm.printNwMetrics(nm);
 		//nfd::cs::sayHello();
 		return;
 		
