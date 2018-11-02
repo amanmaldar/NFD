@@ -30,7 +30,7 @@ namespace cs {
 			
 		
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "						Network_Metrics\n"
+				ofs	<< "/n						Network_Metrics\n"
 					<< 							fixed
 					<< "    		Total_Exp_Resp_Time = " << nm.responseTime/1000 <<" mS\n"
 					<< "       	   Per_Packet_Resp_Time = " << art/1000 <<" mS\n"
@@ -60,15 +60,15 @@ namespace cs {
 		
 		void perfMeasure::printCsMetrics(csMetrics csm){
 				ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "						Device_Metrics\n"
+				ofs	<< "/n						Device_Metrics\n"
 					<< 							fixed
 					<< "    				   nCS_Hits = " << csm.nCsHits <<"\n"	
 					<< "    				   nCS_Miss = " << csm.nCsMiss <<"\n"
 					<< "    				  Hit_Ratio = " << 100*csm.nCsHits/(csm.nCsHits+csm.nCsMiss) <<" %\n"	
 					<< "       Total_csLookUp_Miss_Time = " << csm.csTotalMissLat <<" uS\n"
-					<< "  Per_Packet_csLookUp_Miss_Time = " << csm.csTotalMissLat/csm.nCsMiss <<" uS\n"
+					<< "  Per_Packet_csLookUp_Miss_Time = " << (csm.nCsMiss!=0) ? csm.csTotalMissLat/csm.nCsMiss : 0<<" uS\n"
 					<< "       Total_csLookUp_Hit_Time  = " << csm.csTotalHitLat <<" uS\n"
-					<< "   Per_Packet_csLookUp_Hit_Time = " << csm.csTotalHitLat/csm.nCsHits <<" uS\n";	
+					<< "   Per_Packet_csLookUp_Hit_Time = " << (csm.nCsHits!=) ? csm.csTotalHitLat/csm.nCsHits : 0<<" uS\n";	
 				ofs.close();
 		}
 		
