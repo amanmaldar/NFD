@@ -29,7 +29,7 @@ namespace cs {
 				apl = nm.processLat/nm.nInData ;
 			}
 			
-			 std::time_t now = time(0);
+			 std::time_t now = std::time(0);
 			 char* dt = ctime(&now);
    
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
