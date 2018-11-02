@@ -95,12 +95,14 @@ Forwarder::~Forwarder() = default;
 void
 Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 {
-
+		auto intSize = std::to_string(interest.wireEncode().size());
+  	
   // receive Interest
   NFD_LOG_DEBUG("onIncomingInterest face=" << inFace.getId() <<
-                " interest=" << interest.getName());
+                " interest=" << interest.getName() << "size:" << intSize);
   interest.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
   ++m_counters.nInInterests;
+
 	auto interestName_2 = interest.getName().toUri();
 
 
@@ -414,7 +416,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  hop count " <<  *intHopsTag  << "  processLat: " << *intProcessingTimeTag << " ");		
 
 	}
-  
+  	
+	// No action on Forwarder. Those are handled by Link Layer
 
     // check if we are back to consumer
 	intHopsTag = interestInPit.getTag<lp::intHopsTag>();
