@@ -33,7 +33,7 @@ namespace cs {
 			 char* dt = ctime(&now);
    
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "\n						Network_Metrics		Time:" << dt << "\n"
+				ofs	<< "\n						Network_Metrics		Time: " << dt[0:-4] 
 					<< 							fixed
 					<< "    		Total_Exp_Resp_Time = " << nm.responseTime/1000 <<" mS\n"
 					<< "       	   Per_Packet_Resp_Time = " << art/1000 <<" mS\n"
