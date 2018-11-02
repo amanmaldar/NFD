@@ -159,12 +159,18 @@ Cs::find(const Interest& interest,
 		csm.nCsMiss++;
 		csm.csTotalMissLat += diff.count();
 		
+		NFD_LOG_DEBUG("printcs1 interest=" << interest.getName() );
+
 		if (interestName.find("/ndn/metrics/zero") != std::string::npos) {
 			csm = pm_1.clearCsMetrics(csm);
+			NFD_LOG_DEBUG("printcs2 interest=" << interest.getName() );
+
 		}			
 			
 		if (interestName.find("/ndn/metrics/show") != std::string::npos) {
 			pm_1.printCsMetrics(csm);
+			NFD_LOG_DEBUG("printcs3 interest=" << interest.getName() );
+
 		} 
 
     missCallback(interest);
