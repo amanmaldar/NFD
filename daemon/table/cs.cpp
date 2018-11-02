@@ -41,7 +41,7 @@
 
 nfd::cs::csMetrics csm = {0,0,0,0};
 nfd::cs::perfMeasure pm_1;
-std::string interestName ("blank");
+//std::string interestName ("blank");
 namespace nfd {
 namespace cs {
 
@@ -143,7 +143,7 @@ Cs::find(const Interest& interest,
     return;
   }
   const Name& prefix = interest.getName();
-  //t1 = std::chrono::high_resolution_clock::now();			// Start timer = t1 = begin CS search
+  t1 = std::chrono::high_resolution_clock::now();			// Start timer = t1 = begin CS search
 
 	
   bool isRightmost = interest.getChildSelector() == 1;
@@ -164,30 +164,30 @@ Cs::find(const Interest& interest,
   }
  
 	 if (match == last) {
-/*		t2 = std::chrono::high_resolution_clock::now();		// Stop timer = t2 = end CS search - Result Not Found
+		t2 = std::chrono::high_resolution_clock::now();		// Stop timer = t2 = end CS search - Result Not Found
 		diff = t2-t1;
 		NFD_LOG_DEBUG("onContentStoreMiss interest=" << interest.getName() << "onContentStoreMissDiff=" << diff.count());
 
 		csm.nCsMiss++;
 		csm.csTotalMissLat += diff.count();
-*/
+
 		// Read the interest name. It is used everywhere.
 
-		interestName = interest.getName().toUri();
+		auto interestName = interest.getName().toUri();
 
-		NFD_LOG_DEBUG("printcs1 interest=" << interestName);
+		NFD_LOG_DEBUG("printcs1 interest=" << interest.getName());
 
 		if (interestName.find("/ndn/metrics/zero") != std::string::npos) {
-//			csm = pm_1.clearCsMetrics(csm);
-			NFD_LOG_DEBUG("printcs2 interest=" << interestName);
+			csm = pm_1.clearCsMetrics(csm);
+			NFD_LOG_DEBUG("printcs2 interest=" << interest.getName());
 			return;
 
 		}			
 			
 		if (interestName.find("/ndn/metrics/show") != std::string::npos) {
 			csm.nCsMiss--;
-//			pm_1.printCsMetrics(csm);
-			NFD_LOG_DEBUG("printcs3 interest=" << interestName);
+			pm_1.printCsMetrics(csm);
+			NFD_LOG_DEBUG("printcs3 interest=" << interest.getName());
 			return;
 
 		}
@@ -198,13 +198,13 @@ Cs::find(const Interest& interest,
   } // searching ends here . Timer should end here 
 
 	// continue only for hit scenario
-/*	t2 = std::chrono::high_resolution_clock::now();
+	t2 = std::chrono::high_resolution_clock::now();
 	diff = t2-t1;
 	NFD_LOG_DEBUG("onContentStoreHit interest=" << interest.getName() << "onContentStoreHitDiff=" << diff.count());
 
 	csm.nCsHits++;
 	csm.csTotalHitLat += diff.count();
-*/
+
   NFD_LOG_DEBUG("  matching " << match->getName());
   m_policy->beforeUse(match);
   hitCallback(interest, match->getData());
