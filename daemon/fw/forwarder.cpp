@@ -262,6 +262,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	data.setTag(make_shared<lp::intProcessingTimeTag>(*intProcessingTimeTag + (timeNow - *intArrivalTimeTag) ));
 	auto processLat = data.getTag<lp::intProcessingTimeTag>();			
 	
+	
   	// check if we are back to consumer
 	intHopsTag = interestInPit.getTag<lp::intHopsTag>();
 	auto dataProduceTimeTag = data.getTag<lp::dataProduceTimeTag>();
