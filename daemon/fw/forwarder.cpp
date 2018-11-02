@@ -107,7 +107,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
 
 	if (interestName_2.find("/ndn/metrics/show") != std::string::npos) {
-		pm.printNwMetrics(nm);
+		pm.printNwMetrics();
 		//nfd::cs::sayHello();
 		return;
 		
@@ -208,6 +208,7 @@ Forwarder::onContentStoreMiss(const Face& inFace, const shared_ptr<pit::Entry>& 
                               const Interest& interest)
 {
 	++m_counters.nCsMisses;
+	nm.nCsMiss++;
 
   // insert in-record
   pitEntry->insertOrUpdateInRecord(const_cast<Face&>(inFace), interest);
@@ -284,6 +285,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 		// update the global counters
 		// Packets come from local face for on content store miss. 
 		if (inFace.getScope() == ndn::nfd::FACE_SCOPE_LOCAL){
+			nm.nCsHits++;
 			nm.nInData++;
 			nm.fwdLatencyTag += fwdLatency;
 			nm.responseTime += responseTime;
