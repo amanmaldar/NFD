@@ -31,6 +31,10 @@
 #include "cs-entry-impl.hpp"
 #include <ndn-cxx/util/signal.hpp>
 #include <boost/iterator/transform_iterator.hpp>
+// added for CS lookup
+#include <core/global.hpp>
+#include <iomanip>
+#include "boost/algorithm/string.hpp"
 
 namespace nfd {
 namespace cs {
