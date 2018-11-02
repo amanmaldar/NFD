@@ -66,9 +66,9 @@ namespace cs {
 					<< "    				   nCS_Miss = " << csm.nCsMiss <<"\n"
 					<< "    				  Hit_Ratio = " << 100*csm.nCsHits/(csm.nCsHits+csm.nCsMiss) <<" %\n"	
 					<< "       Total_csLookUp_Miss_Time = " << csm.csTotalMissLat <<" uS\n"
-					<< "  Per_Packet_csLookUp_Miss_Time = " << (csm.nCsMiss!=0) ? csm.csTotalMissLat/csm.nCsMiss : 0<<" uS\n"
+					<< "  Per_Packet_csLookUp_Miss_Time = " << ((csm.nCsMiss!=0) ? csm.csTotalMissLat/csm.nCsMiss:0) <<" uS\n"
 					<< "       Total_csLookUp_Hit_Time  = " << csm.csTotalHitLat <<" uS\n"
-					<< "   Per_Packet_csLookUp_Hit_Time = " << (csm.nCsHits!=) ? csm.csTotalHitLat/csm.nCsHits : 0<<" uS\n";	
+					<< "   Per_Packet_csLookUp_Hit_Time = " << ((csm.nCsHits!=0) ? csm.csTotalHitLat/csm.nCsHits:0) <<" uS\n";	
 				ofs.close();
 		}
 		
