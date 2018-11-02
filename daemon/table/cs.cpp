@@ -32,13 +32,13 @@
 
 nfd::cs::csMetrics csm;
 nfd::cs::perfMeasure pm_1;
-std::string interestName ("blank");
+//std::string interestName ("blank");
 namespace nfd {
 namespace cs {
 
 NDN_CXX_ASSERT_FORWARD_ITERATOR(Cs::const_iterator);
 
-NFD_LOG_INIT(ContentStore);
+NFD_LOG_INIT(TrackLat);
 // declare a global start time const
 auto t1 = std::chrono::high_resolution_clock::now();
 auto t2 = std::chrono::high_resolution_clock::now();
@@ -132,6 +132,25 @@ Cs::find(const Interest& interest,
   }
   const Name& prefix = interest.getName();
   t1 = std::chrono::high_resolution_clock::now();			// Start timer = t1 = begin CS search
+
+		// Read the interest name. It is used everywhere.
+	auto interestName = interest.getName().toUri();
+
+	NFD_LOG_DEBUG("printcs1 interest=" << interest.getName() );
+
+		if (interestName.find("/ndn/metrics/zero") != std::string::npos) {
+			csm = pm_1.clearCsMetrics(csm);
+			NFD_LOG_DEBUG("printcs2 interest=" << interest.getName() );
+			return;
+
+		}			
+			
+		if (interestName.find("/ndn/metrics/show") != std::string::npos) {
+			pm_1.printCsMetrics(csm);
+			NFD_LOG_DEBUG("printcs3 interest=" << interest.getName() );
+			return;
+
+		}
   bool isRightmost = interest.getChildSelector() == 1;
   NFD_LOG_DEBUG("find " << prefix << (isRightmost ? " R" : " L"));
 
@@ -148,9 +167,7 @@ Cs::find(const Interest& interest,
   else {
     match = this->findLeftmost(interest, first, last);
   }
-	// Read the interest name. It is used everywhere.
-	interestName = interest.getName().toUri();
-
+ 
 	 if (match == last) {
 		t2 = std::chrono::high_resolution_clock::now();		// Stop timer = t2 = end CS search - Result Not Found
 		diff = t2-t1;
@@ -159,19 +176,7 @@ Cs::find(const Interest& interest,
 		csm.nCsMiss++;
 		csm.csTotalMissLat += diff.count();
 		
-		NFD_LOG_DEBUG("printcs1 interest=" << interest.getName() );
-
-		if (interestName.find("/ndn/metrics/zero") != std::string::npos) {
-			csm = pm_1.clearCsMetrics(csm);
-			NFD_LOG_DEBUG("printcs2 interest=" << interest.getName() );
-
-		}			
-			
-		if (interestName.find("/ndn/metrics/show") != std::string::npos) {
-			pm_1.printCsMetrics(csm);
-			NFD_LOG_DEBUG("printcs3 interest=" << interest.getName() );
-
-		} 
+	
 
     missCallback(interest);
     return;
