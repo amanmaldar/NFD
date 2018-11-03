@@ -35,6 +35,8 @@ std::string interestName_3 ("blank");
 namespace nfd {
 namespace fw {
 
+NFD_LOG_INIT(TrackLat);
+
 // declare a global start time const
 auto t1 = std::chrono::high_resolution_clock::now();
 auto t2 = std::chrono::high_resolution_clock::now();
@@ -55,15 +57,18 @@ BestRouteStrategyBase::afterReceiveInterest(const Face& inFace, const Interest& 
     return;
   }
   	 interestName_3 = interest.getName().toUri();
-
+	NFD_LOG_DEBUG("afterReceiveInterest interest=" << interest.getName() << " " << interestName_3);
+	
   	// Action - Reset
 	if (interestName_3.find("/ndn/metrics/zero") != std::string::npos) {
 		fibm = pm_3.clearFibMetrics(fibm);
+		NFD_LOG_DEBUG("afterReceiveInterest zero interest=" << interest.getName());
 	}			
 			
 	// Action - show
 	if (interestName_3.find("/ndn/metrics/show") != std::string::npos) {
 		fibm.nFibHits--;
+		NFD_LOG_DEBUG("afterReceiveInterest show interest=" << interest.getName());
 		pm_3.printFibMetrics(fibm);	
 	} 
   
