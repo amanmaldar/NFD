@@ -42,7 +42,8 @@ BestRouteStrategyBase::afterReceiveInterest(const Face& inFace, const Interest& 
     // not a new Interest, don't forward
     return;
   }
-
+  
+  // add FIB lookup timer here
   const fib::Entry& fibEntry = this->lookupFib(*pitEntry);
   for (const auto& nexthop : fibEntry.getNextHops()) {
     Face& outFace = nexthop.getFace();
