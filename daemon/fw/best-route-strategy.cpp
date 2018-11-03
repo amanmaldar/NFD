@@ -29,6 +29,8 @@
 // Performance metrics initialization
 nfd::cs::fibMetrics fibm;
 nfd::cs::perfMeasure pm_3;
+std::string interestName_1 ("blank");
+
 
 namespace nfd {
 namespace fw {
