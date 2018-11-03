@@ -43,12 +43,7 @@ namespace cs {
 					<< "   Per_Packet_ProcessLat_OnPath = " << apl/1000 << " mS\n"
 					<< "   	 	   Total_InData_Packets = " << nm.nInData << "\n";
 					
-				ofs	<< "\n				FIB_Metrics:\n"
-					<< 							fixed
-					<< "    				   nFIB_Hits = " << nm.nFibHits <<"\n"	
-					<< "    	Total_fibLookUp_Hit_Time = " << nm.fibTotalHitLat * 1000000 <<" uS\n"
-					<< "  Per_Packet_fibLookUp_Miss_Time = " << ((nm.nFibHits!=0) ? nm.fibTotalHitLat/nm.nFibHits:0)*1000000 <<" uS\n";
-
+			
 					
 			ofs.close();
 		
@@ -63,8 +58,8 @@ namespace cs {
 			nm.nFibHits = 0;
 			nm.fibTotalHitLat = 0;
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "\nNetwork_Metrics Reset\n"
-					<< "FIB_Metrics Reset\n";
+				ofs	<< "\nNetwork_Metrics Reset\n";
+
 			ofs.close();
 			
 			return nm;
@@ -122,6 +117,27 @@ namespace cs {
 			return pitm;
 		}
 
+		void perfMeasure::printFibMetrics(fibMetrics fibm){
+			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
+				ofs	<< "\n				FIB_Metrics:\n"
+					<< 							fixed
+					<< "    				   nFIB_Hits = " << fibm.nFibHits <<"\n"	
+					<< "    	Total_fibLookUp_Hit_Time = " << fibm.fibTotalHitLat * 1000000 <<" uS\n"
+					<< "  Per_Packet_fibLookUp_Miss_Time = " << ((fibm.nFibHits!=0) ? fibm.fibTotalHitLat/fibm.nFibHits:0)*1000000 <<" uS\n";
+
+			ofs.close();
+		}
+		
+		fibMetrics perfMeasure::clearFibMetrics(fibMetrics &fibm){
+			fibm.nFibHits  = 0;
+			
+			fibm.fibTotalHitLat = 0;
+			
+			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
+				ofs	<< "Fib_Metrics Reset\n";
+			ofs.close();
+			return fibm;
+		}
 
 
 		

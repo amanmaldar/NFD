@@ -26,8 +26,18 @@
 #include "best-route-strategy.hpp"
 #include "algorithm.hpp"
 
+// Performance metrics initialization
+nfd::cs::fibMetrics fibm;
+nfd::cs::perfMeasure pm_3;
+
 namespace nfd {
 namespace fw {
+
+// declare a global start time const
+auto t1 = std::chrono::high_resolution_clock::now();
+auto t2 = std::chrono::high_resolution_clock::now();
+std::chrono::duration <double> diff;
+
 
 BestRouteStrategyBase::BestRouteStrategyBase(Forwarder& forwarder)
   : Strategy(forwarder)
@@ -42,9 +52,26 @@ BestRouteStrategyBase::afterReceiveInterest(const Face& inFace, const Interest& 
     // not a new Interest, don't forward
     return;
   }
+  	 interestName_1 = interest.getName().toUri();
+
+  	// Action - Reset
+	if (interestName_1.find("/ndn/metrics/zero") != std::string::npos) {
+		fibm = pm_3.clearFibMetrics(fibm);
+	}			
+			
+	// Action - show
+	if (interestName_1.find("/ndn/metrics/show") != std::string::npos) {
+		fibm.nFibHits--;
+		pm_3.printFibMetrics(fibm);	
+	} 
   
   // add FIB lookup timer here
+   t1 = std::chrono::high_resolution_clock::now();
   const fib::Entry& fibEntry = this->lookupFib(*pitEntry);
+	t2 = std::chrono::high_resolution_clock::now();
+    diff = t2-t1;
+  	fibm.fibTotalHitLat += diff.count();
+	fibm.nFibHits++;
   for (const auto& nexthop : fibEntry.getNextHops()) {
     Face& outFace = nexthop.getFace();
     if (!wouldViolateScope(inFace, interest, outFace) &&

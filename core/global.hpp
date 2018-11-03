@@ -32,7 +32,13 @@ namespace cs {
         double pitTotalMissLat;	
 
 	};
+	
+	
+	struct fibMetrics {
 
+		uint64_t nFibHits;
+		double fibTotalHitLat;
+	};
 	struct networkMetrics {
 
 
@@ -41,8 +47,7 @@ namespace cs {
 		uint64_t nInData;
 		uint64_t processLat;
 		
-		uint64_t nFibHits;
-		double fibTotalHitLat;
+		
 
 	};
 	void sayHello();
@@ -58,6 +63,9 @@ namespace cs {
 		
 		void printPitMetrics(pitMetrics pitm);
 		pitMetrics clearPitMetrics(pitMetrics &pitm);
+		
+		void printFibMetrics(fibMetrics fibm);
+		fibMetrics clearFibMetrics(fibMetrics &fibm);
 
 	};
 

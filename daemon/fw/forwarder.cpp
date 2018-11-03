@@ -241,18 +241,20 @@ Forwarder::onContentStoreMiss(const Face& inFace, const shared_ptr<pit::Entry>& 
 
 	// Forwarding strategy and FIB lookup happens here
     //____________ FIB lookup latency and nFibHits _______
-	t3 = std::chrono::high_resolution_clock::now();
+	// moving to best-route-strategy.cpp
+//	t3 = std::chrono::high_resolution_clock::now();
   // dispatch to strategy: after incoming Interest
   this->dispatchToStrategy(*pitEntry,
     [&] (fw::Strategy& strategy) { strategy.afterReceiveInterest(inFace, interest, pitEntry); });
 	// ignore nlsr packets
+/*
 	if (interestName_2.find("nlsr") == std::string::npos){
 		t4 = std::chrono::high_resolution_clock::now();
 		diff = t4-t3;
 		nm.fibTotalHitLat += diff.count();
 		nm.nFibHits++;
 	}
-
+*/
 }
 
 void
