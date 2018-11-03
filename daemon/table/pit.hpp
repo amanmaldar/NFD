@@ -28,6 +28,10 @@
 
 #include "pit-entry.hpp"
 #include "pit-iterator.hpp"
+// added for PIT lookup
+#include <core/global.hpp>
+#include <iomanip>
+#include "boost/algorithm/string.hpp"
 
 namespace nfd {
 namespace pit {
