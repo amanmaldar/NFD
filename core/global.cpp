@@ -96,7 +96,7 @@ namespace cs {
 					<< "       Total_pitLookUp_Miss_Time = " << pitm.pitTotalMissLat <<" uS\n"
 					<< "  Per_Packet_pitLookUp_Miss_Time = " << ((pitm.nPitMiss!=0) ? pitm.pitTotalMissLat/pitm.nPitMiss:0) <<" uS\n"
 					<< "       Total_pitLookUp_Hit_Time  = " << pitm.pitTotalHitLat <<" uS\n"
-					<< "   Per_Packet_pitLookUp_Hit_Time = " << ((pitm.nPitHits!=0) ? pitm.pitmTotalHitLat/pitm.nPitHits:0) <<" uS\n";	
+					<< "   Per_Packet_pitLookUp_Hit_Time = " << ((pitm.nPitHits!=0) ? pitm.pitTotalHitLat/pitm.nPitHits:0) <<" uS\n";	
 				ofs.close();
 		}
 		
