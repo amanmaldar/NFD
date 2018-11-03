@@ -46,8 +46,8 @@ namespace cs {
 				ofs	<< "\n				FIB_Metrics:\n"
 					<< 							fixed
 					<< "    				   nFIB_Hits = " << nm.nFibHits <<"\n"	
-					<< "    	 Total_fibLookUp_Hit_Time = " << nm.fibTotalHitLat <<"\n"
-					<< "   Per_Packet_fibLookUp_Miss_Time = " << ((nm.nFibHits!=0) ? nm.fibTotalHitLat/nm.nFibHits:0)*1000000 <<" uS\n";
+					<< "    	Total_fibLookUp_Hit_Time = " << nm.fibTotalHitLat <<" uS\n"
+					<< "  Per_Packet_fibLookUp_Miss_Time = " << ((nm.nFibHits!=0) ? nm.fibTotalHitLat/nm.nFibHits:0)*1000000 <<" uS\n";
 
 					
 			ofs.close();
@@ -63,7 +63,8 @@ namespace cs {
 			nm.nFibHits = 0;
 			nm.fibTotalHitLat = 0;
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "\nNetwork_Metrics Reset\n";
+				ofs	<< "\nNetwork_Metrics Reset\n"
+				ofs	<< "\nFIB_Metrics Reset\n";
 			ofs.close();
 			
 			return nm;
