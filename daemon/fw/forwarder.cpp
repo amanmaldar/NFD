@@ -43,6 +43,10 @@ namespace nfd {
 //NFD_LOG_INIT(Forwarder);
 NFD_LOG_INIT(TrackLat);
 /*
+// declare a global start time const
+auto t1 = std::chrono::high_resolution_clock::now();
+auto t2 = std::chrono::high_resolution_clock::now();
+std::chrono::duration <double> diff;
 time::milliseconds timestamp = time::toUnixTimestamp(time::system_clock::now());
 auto timeNow = timestamp.count();
 
