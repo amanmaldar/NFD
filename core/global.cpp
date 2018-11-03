@@ -29,8 +29,8 @@ namespace cs {
 				apl = nm.processLat/nm.nInData ;
 			}
 			
-			 std::time_t now = std::time(0);
-			 char* dt = ctime(&now);
+			 //std::time_t now = std::time(0);
+			 //char* dt = ctime(&now);
    
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\n				Network_Metrics:\n"
@@ -47,7 +47,7 @@ namespace cs {
 					<< 							fixed
 					<< "    				   nFIB_Hits = " << nm.nFibHits <<"\n"	
 					<< "    	 Total_fibLookUp_Hit_Time = " << nm.fibTotalHitLat <<"\n"
-					<< "   Per_Packet_fibLookUp_Miss_Time = " << ((nm.nFibHits!=0) ? nm.fibTotalHitLat/nm.nFibHits:0)*1000000 <<" uS\n"
+					<< "   Per_Packet_fibLookUp_Miss_Time = " << ((nm.nFibHits!=0) ? nm.fibTotalHitLat/nm.nFibHits:0)*1000000 <<" uS\n";
 
 					
 			ofs.close();
