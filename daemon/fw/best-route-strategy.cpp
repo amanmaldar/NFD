@@ -29,7 +29,7 @@
 // Performance metrics initialization
 nfd::cs::fibMetrics fibm;
 nfd::cs::perfMeasure pm_3;
-std::string interestName_1 ("blank");
+std::string interestName_3 ("blank");
 
 
 namespace nfd {
@@ -54,15 +54,15 @@ BestRouteStrategyBase::afterReceiveInterest(const Face& inFace, const Interest& 
     // not a new Interest, don't forward
     return;
   }
-  	 interestName_1 = interest.getName().toUri();
+  	 interestName_3 = interest.getName().toUri();
 
   	// Action - Reset
-	if (interestName_1.find("/ndn/metrics/zero") != std::string::npos) {
+	if (interestName_3.find("/ndn/metrics/zero") != std::string::npos) {
 		fibm = pm_3.clearFibMetrics(fibm);
 	}			
 			
 	// Action - show
-	if (interestName_1.find("/ndn/metrics/show") != std::string::npos) {
+	if (interestName_3.find("/ndn/metrics/show") != std::string::npos) {
 		fibm.nFibHits--;
 		pm_3.printFibMetrics(fibm);	
 	} 
