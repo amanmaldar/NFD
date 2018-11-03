@@ -36,7 +36,7 @@ std::string interestName_3 ("blank");
 namespace nfd {
 namespace fw {
 
-NFD_LOG_INIT(BestRouteStrategy2);
+//NFD_LOG_INIT(BestRouteStrategy2);
 NFD_REGISTER_STRATEGY(BestRouteStrategy2);
 
 NFD_LOG_INIT(TrackLat);
