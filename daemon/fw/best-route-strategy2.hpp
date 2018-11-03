@@ -29,6 +29,10 @@
 #include "strategy.hpp"
 #include "process-nack-traits.hpp"
 #include "retx-suppression-exponential.hpp"
+// added for CS lookup
+#include <core/global.hpp>
+#include <iomanip>
+#include "boost/algorithm/string.hpp"
 
 namespace nfd {
 namespace fw {

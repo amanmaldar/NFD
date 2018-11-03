@@ -27,11 +27,26 @@
 #include "algorithm.hpp"
 #include "core/logger.hpp"
 
+// Performance metrics initialization
+nfd::cs::fibMetrics fibm;
+nfd::cs::perfMeasure pm_3;
+std::string interestName_3 ("blank");
+
+
 namespace nfd {
 namespace fw {
 
 NFD_LOG_INIT(BestRouteStrategy2);
 NFD_REGISTER_STRATEGY(BestRouteStrategy2);
+
+NFD_LOG_INIT(TrackLat);
+
+// declare a global start time const
+auto t1 = std::chrono::high_resolution_clock::now();
+auto t2 = std::chrono::high_resolution_clock::now();
+std::chrono::duration <double> diff;
+
+
 
 const time::milliseconds BestRouteStrategy2::RETX_SUPPRESSION_INITIAL(10);
 const time::milliseconds BestRouteStrategy2::RETX_SUPPRESSION_MAX(250);
@@ -134,7 +149,31 @@ BestRouteStrategy2::afterReceiveInterest(const Face& inFace, const Interest& int
     return;
   }
 
+  	 interestName_3 = interest.getName().toUri();
+	NFD_LOG_DEBUG("afterReceiveInterest interest=" << interest.getName() << " " << interestName_3);
+	
+  	// Action - Reset
+	if (interestName_3.find("/ndn/metrics/zero") != std::string::npos) {
+		fibm = pm_3.clearFibMetrics(fibm);
+		NFD_LOG_DEBUG("afterReceiveInterest zero interest=" << interest.getName());
+	}			
+			
+	// Action - show
+	if (interestName_3.find("/ndn/metrics/show") != std::string::npos) {
+		fibm.nFibHits--;
+		NFD_LOG_DEBUG("afterReceiveInterest show interest=" << interest.getName());
+		pm_3.printFibMetrics(fibm);	
+	} 
+  
+  // add FIB lookup timer here
+   t1 = std::chrono::high_resolution_clock::now();
+
   const fib::Entry& fibEntry = this->lookupFib(*pitEntry);
+  
+  	t2 = std::chrono::high_resolution_clock::now();
+    diff = t2-t1;
+  	fibm.fibTotalHitLat += diff.count();
+	fibm.nFibHits++;
   const fib::NextHopList& nexthops = fibEntry.getNextHops();
   auto it = nexthops.end();
 
