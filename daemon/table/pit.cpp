@@ -28,14 +28,16 @@
 // Performance metrics initialization
 nfd::cs::pitMetrics pitm;
 nfd::cs::perfMeasure pm_2;
+
+std::string interestName_1 ("blank");
+namespace nfd {
+namespace pit {
+
 // declare a global start time const
 auto t1 = std::chrono::high_resolution_clock::now();
 auto t2 = std::chrono::high_resolution_clock::now();
 std::chrono::duration <double> diff;
 
-std::string interestName_1 ("blank");
-namespace nfd {
-namespace pit {
 
 static inline bool
 nteHasPitEntries(const name_tree::Entry& nte)
