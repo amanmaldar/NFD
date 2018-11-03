@@ -54,7 +54,7 @@ namespace cs {
 			nm.nInData = 0;
 			nm.processLat = 0;
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "Network_Metrics Reset\n";
+				ofs	<< "\nNetwork_Metrics Reset\n";
 			ofs.close();
 			
 			return nm;
@@ -70,7 +70,7 @@ namespace cs {
 					<< "    				  Hit_Ratio = " << 100*csm.nCsHits/(csm.nCsHits+csm.nCsMiss) <<" %\n"	
 					<< "       Total_csLookUp_Miss_Time = " << csm.csTotalMissLat * 1000000 <<" uS\n"
 					<< "  Per_Packet_csLookUp_Miss_Time = " << ((csm.nCsMiss!=0) ? csm.csTotalMissLat/csm.nCsMiss:0)*1000000 <<" uS\n"
-					<< "       Total_csLookUp_Hit_Time  = " << csm.csTotalHitLat * 1000000 <<" uS\n"
+					<< "        Total_csLookUp_Hit_Time = " << csm.csTotalHitLat * 1000000 <<" uS\n"
 					<< "   Per_Packet_csLookUp_Hit_Time = " << ((csm.nCsHits!=0) ? csm.csTotalHitLat/csm.nCsHits:0)*1000000 <<" uS\n";	
 				ofs.close();
 		}
@@ -95,7 +95,7 @@ namespace cs {
 					<< "    				   Hit_Ratio = " << 100*pitm.nPitHits/(pitm.nPitHits+pitm.nPitMiss) <<" %\n"	
 					<< "       Total_pitLookUp_Miss_Time = " << pitm.pitTotalMissLat * 1000000 <<" uS\n"
 					<< "  Per_Packet_pitLookUp_Miss_Time = " << ((pitm.nPitMiss!=0) ? pitm.pitTotalMissLat/pitm.nPitMiss:0)*1000000 <<" uS\n"
-					<< "       Total_pitLookUp_Hit_Time  = " << pitm.pitTotalHitLat * 1000000 <<" uS\n"
+					<< "        Total_pitLookUp_Hit_Time = " << pitm.pitTotalHitLat * 1000000 <<" uS\n"
 					<< "   Per_Packet_pitLookUp_Hit_Time = " << ((pitm.nPitHits!=0) ? pitm.pitTotalHitLat/pitm.nPitHits:0)*100000 <<" uS\n";	
 				ofs.close();
 		}
