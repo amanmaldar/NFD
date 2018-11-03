@@ -44,8 +44,10 @@ namespace nfd {
 NFD_LOG_INIT(TrackLat);
 /*
 // declare a global start time const
-auto t1 = std::chrono::high_resolution_clock::now();
-auto t2 = std::chrono::high_resolution_clock::now();
+
+
+auto t4 = std::chrono::high_resolution_clock::now();
+auto t3 = std::chrono::high_resolution_clock::now();
 std::chrono::duration <double> diff;
 time::milliseconds timestamp = time::toUnixTimestamp(time::system_clock::now());
 auto timeNow = timestamp.count();
@@ -237,12 +239,12 @@ Forwarder::onContentStoreMiss(const Face& inFace, const shared_ptr<pit::Entry>& 
 
 	// Forwarding strategy and FIB lookup happens here
     //____________ FIB lookup latency and nFibHits _______
-	t1 = std::chrono::high_resolution_clock::now();
+	t3 = std::chrono::high_resolution_clock::now();
   // dispatch to strategy: after incoming Interest
   this->dispatchToStrategy(*pitEntry,
     [&] (fw::Strategy& strategy) { strategy.afterReceiveInterest(inFace, interest, pitEntry); });
-	t2 = std::chrono::high_resolution_clock::now();
-	diff = t2-t1;
+	t4 = std::chrono::high_resolution_clock::now();
+	diff = t4-t3;
 	nm.fibTotalHitLat += diff.count();
 	nm.nFibHits++;
 
