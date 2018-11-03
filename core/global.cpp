@@ -46,7 +46,7 @@ namespace cs {
 				ofs	<< "\n				FIB_Metrics:\n"
 					<< 							fixed
 					<< "    				   nFIB_Hits = " << nm.nFibHits <<"\n"	
-					<< "    	Total_fibLookUp_Hit_Time = " << nm.fibTotalHitLat <<" uS\n"
+					<< "    	Total_fibLookUp_Hit_Time = " << nm.fibTotalHitLat * 1000000 <<" uS\n"
 					<< "  Per_Packet_fibLookUp_Miss_Time = " << ((nm.nFibHits!=0) ? nm.fibTotalHitLat/nm.nFibHits:0)*1000000 <<" uS\n";
 
 					
