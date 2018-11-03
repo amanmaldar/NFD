@@ -56,6 +56,7 @@ auto t3 = std::chrono::high_resolution_clock::now();
 std::chrono::duration <double> diff;
 
 uint64_t fwdDiff;
+std::string interestName_2 ("blank");
 
 
 static Name
@@ -110,7 +111,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   interest.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
   ++m_counters.nInInterests;
 
-	auto interestName_2 = interest.getName().toUri();
+	interestName_2 = interest.getName().toUri();
 
 
 	if (interestName_2.find("/ndn/metrics/show") != std::string::npos) {
@@ -245,7 +246,7 @@ Forwarder::onContentStoreMiss(const Face& inFace, const shared_ptr<pit::Entry>& 
   this->dispatchToStrategy(*pitEntry,
     [&] (fw::Strategy& strategy) { strategy.afterReceiveInterest(inFace, interest, pitEntry); });
 	// ignore nlsr packets
-	if (interestName.find("nlsr") == std::string::npos){
+	if (interestName_2.find("nlsr") == std::string::npos){
 		t4 = std::chrono::high_resolution_clock::now();
 		diff = t4-t3;
 		nm.fibTotalHitLat += diff.count();

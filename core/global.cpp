@@ -64,7 +64,7 @@ namespace cs {
 			nm.fibTotalHitLat = 0;
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\nNetwork_Metrics Reset\n"
-				ofs	<< "\nFIB_Metrics Reset\n";
+					<< "FIB_Metrics Reset\n";
 			ofs.close();
 			
 			return nm;
