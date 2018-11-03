@@ -43,6 +43,13 @@ namespace cs {
 					<< "   Per_Packet_ProcessLat_OnPath = " << apl/1000 << " mS\n"
 					<< "   	 	   Total_InData_Packets = " << nm.nInData << "\n";
 					
+				ofs	<< "\n				FIB_Metrics:\n"
+					<< 							fixed
+					<< "    				   nFIB_Hits = " << nm.nFibHits <<"\n"	
+					<< "    	 Total_fibLookUp_Hit_Time = " << nm.fibTotalHitLat <<"\n"
+					<< "   Per_Packet_fibLookUp_Miss_Time = " << ((nm.nFibHits!=0) ? nm.fibTotalHitLat/nm.nFibHits:0)*1000000 <<" uS\n"
+
+					
 			ofs.close();
 		
 		}
@@ -53,6 +60,8 @@ namespace cs {
 			nm.fwdLatencyTag = 0; 
 			nm.nInData = 0;
 			nm.processLat = 0;
+			nm.nFibHits = 0;
+			nm.fibTotalHitLat = 0;
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\nNetwork_Metrics Reset\n";
 			ofs.close();
@@ -72,6 +81,7 @@ namespace cs {
 					<< "  Per_Packet_csLookUp_Miss_Time = " << ((csm.nCsMiss!=0) ? csm.csTotalMissLat/csm.nCsMiss:0)*1000000 <<" uS\n"
 					<< "        Total_csLookUp_Hit_Time = " << csm.csTotalHitLat * 1000000 <<" uS\n"
 					<< "   Per_Packet_csLookUp_Hit_Time = " << ((csm.nCsHits!=0) ? csm.csTotalHitLat/csm.nCsHits:0)*1000000 <<" uS\n";	
+				
 				ofs.close();
 		}
 		

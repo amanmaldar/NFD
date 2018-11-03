@@ -231,9 +231,17 @@ Forwarder::onContentStoreMiss(const Face& inFace, const shared_ptr<pit::Entry>& 
     return;
   }
 
+	// Forwarding strategy and FIB lookup happens here
+    //____________ FIB lookup latency and nFibHits _______
+	t1 = std::chrono::high_resolution_clock::now();
   // dispatch to strategy: after incoming Interest
   this->dispatchToStrategy(*pitEntry,
     [&] (fw::Strategy& strategy) { strategy.afterReceiveInterest(inFace, interest, pitEntry); });
+	t2 = std::chrono::high_resolution_clock::now();
+	diff = t2-t1;
+	nm.fibTotalHitLat += diff.count();
+	nm.nFibHits++;
+
 }
 
 void

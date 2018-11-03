@@ -71,35 +71,39 @@ Pit::findOrInsert(const Interest& interest, bool allowInsert)
 	} 
 		
 
-	 t1 = std::chrono::high_resolution_clock::now();
+	
   bool hasDigest = name.size() > 0 && name[-1].isImplicitSha256Digest();
   size_t nteDepth = name.size() - static_cast<int>(hasDigest);
   nteDepth = std::min(nteDepth, NameTree::getMaxDepth());
 
+	// Name Tree lookup is actually happening here. It is common lookup for PIT and FIB
+	 t1 = std::chrono::high_resolution_clock::now();
   // ensure NameTree entry exists
   name_tree::Entry* nte = nullptr;
-  if (allowInsert) {
+  if (allowInsert) {	// forwarding path/ Before adding interest to PIT, see if FIB has path
     nte = &m_nameTree.lookup(name, nteDepth);
   }
-  else {
+  else {		// return path. find is called on PIT
     nte = m_nameTree.findExactMatch(name, nteDepth);
     if (nte == nullptr) {
       return {nullptr, true};
     }
   }
 
-  // check if PIT entry already exists
+  // check if PIT entry already exists in name tree
   const auto& pitEntries = nte->getPitEntries();
   auto it = std::find_if(pitEntries.begin(), pitEntries.end(),
     [&interest, nteDepth] (const shared_ptr<Entry>& entry) {
-    // PIT hit scenarion
+  
+      return entry->canMatch(interest, nteDepth);
+    });
+  if (it != pitEntries.end()) {
+  
+    // PIT hit scenario. Return the match result
    	t2 = std::chrono::high_resolution_clock::now();
     diff = t2-t1;
   	pitm.pitTotalHitLat += diff.count();
 	pitm.nPitHits++;
-      return entry->canMatch(interest, nteDepth);
-    });
-  if (it != pitEntries.end()) {
     return {*it, false};
   }
 
@@ -108,8 +112,9 @@ Pit::findOrInsert(const Interest& interest, bool allowInsert)
     return {nullptr, true};
   }
 
+	// PIT missed
   auto entry = make_shared<Entry>(interest);
-  nte->insertPitEntry(entry);
+  nte->insertPitEntry(entry);	// add entry to Name Tree Entry (nte)
   ++m_nItems;
   // PIT miss scenario
   if (interestName_1.find("nlsr") == std::string::npos){

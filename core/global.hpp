@@ -40,6 +40,9 @@ namespace cs {
 		uint64_t fwdLatencyTag;
 		uint64_t nInData;
 		uint64_t processLat;
+		
+		uint64_t nFibHits;
+		double fibTotalHitLat;
 
 	};
 	void sayHello();
