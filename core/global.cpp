@@ -55,8 +55,7 @@ namespace cs {
 			nm.fwdLatencyTag = 0; 
 			nm.nInData = 0;
 			nm.processLat = 0;
-			nm.nFibHits = 0;
-			nm.fibTotalHitLat = 0;
+
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\nNetwork_Metrics Reset\n";
 
