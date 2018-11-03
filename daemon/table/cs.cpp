@@ -171,9 +171,9 @@ Cs::find(const Interest& interest,
 		
 		// ignore nlsr packets
 		if (interestName.find("nlsr") == std::string::npos){
-		t2 = std::chrono::high_resolution_clock::now();		// Stop timer = t2 = end CS search - Result Not Found
-		diff = t2-t1;
-		csm.nCsMiss++;
+			t2 = std::chrono::high_resolution_clock::now();		// Stop timer = t2 = end CS search - Result Not Found
+			diff = t2-t1;
+			csm.nCsMiss++;
 			csm.csTotalMissLat += diff.count();
 		}
 

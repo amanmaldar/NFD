@@ -23,6 +23,15 @@ namespace cs {
         double csTotalMissLat;	
 
 	};
+	
+	struct pitMetrics {
+
+		uint64_t nPitHits;
+		uint64_t nPitMiss;
+        double pitTotalHitLat;
+        double pitTotalMissLat;	
+
+	};
 
 	struct networkMetrics {
 
@@ -43,6 +52,9 @@ namespace cs {
 		networkMetrics clearNwMetrics(networkMetrics &nm);
 		void printCsMetrics(csMetrics csm);
 		csMetrics clearCsMetrics(csMetrics &csm);
+		
+		void printPitMetrics(pitMetrics pitm);
+		pitMetrics clearPitMetrics(pitMetrics &pitm);
 
 	};
 

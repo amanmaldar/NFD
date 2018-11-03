@@ -33,7 +33,7 @@ namespace cs {
 			 char* dt = ctime(&now);
    
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "\n						Network_Metrics		"
+				ofs	<< "\n				Network_Metrics:		"
 					<< 							fixed
 					<< "    		Total_Exp_Resp_Time = " << nm.responseTime/1000 <<" mS\n"
 					<< "       	   Per_Packet_Resp_Time = " << art/1000 <<" mS\n"
@@ -63,7 +63,7 @@ namespace cs {
 		
 		void perfMeasure::printCsMetrics(csMetrics csm){
 				ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs	<< "\n						Device_Metrics\n"
+				ofs	<< "\n				CS_Metrics:"
 					<< 							fixed
 					<< "    				   nCS_Hits = " << csm.nCsHits <<"\n"	
 					<< "    				   nCS_Miss = " << csm.nCsMiss <<"\n"
@@ -84,6 +84,31 @@ namespace cs {
 				ofs	<< "Device_Metrics Reset\n";
 			ofs.close();
 			return csm;
+		}
+		
+		void perfMeasure::printPitMetrics(pitMetrics pitm){
+				ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
+				ofs	<< "\n				PIT_Metrics:"
+					<< 							fixed
+					<< "    				   nPIT_Hits = " << pitm.nPitHits <<"\n"	
+					<< "    				   nPIT_Miss = " << pitm.nPitMiss <<"\n"
+					<< "    				  Hit_Ratio = " << 100*pitm.nPitHits/(pitm.nPitHits+pitm.nPitMiss) <<" %\n"	
+					<< "       Total_pitLookUp_Miss_Time = " << pitm.pitTotalMissLat <<" uS\n"
+					<< "  Per_Packet_pitLookUp_Miss_Time = " << ((pitm.nPitMiss!=0) ? pitm.pitTotalMissLat/pitm.nPitMiss:0) <<" uS\n"
+					<< "       Total_pitLookUp_Hit_Time  = " << pitm.pitTotalHitLat <<" uS\n"
+					<< "   Per_Packet_pitLookUp_Hit_Time = " << ((pitm.nPitHits!=0) ? pitm.pitmTotalHitLat/pitm.nPitHits:0) <<" uS\n";	
+				ofs.close();
+		}
+		
+		pitMetrics perfMeasure::clearPitMetrics(pitMetrics &pitm){
+			pitm.nPitHits  = 0;
+			pitm.nPitMiss = 0;
+			pitm.pitTotalMissLat= 0;
+			pitm.pitTotalHitLat = 0;
+			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
+				ofs	<< "Device_Metrics Reset\n";
+			ofs.close();
+			return pitm;
 		}
 
 

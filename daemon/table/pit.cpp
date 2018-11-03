@@ -25,6 +25,15 @@
 
 #include "pit.hpp"
 
+// Performance metrics initialization
+nfd::cs::pitMetrics pitm;
+nfd::cs::perfMeasure pm_2;
+// declare a global start time const
+auto t1 = std::chrono::high_resolution_clock::now();
+auto t2 = std::chrono::high_resolution_clock::now();
+std::chrono::duration <double> diff;
+
+std::string interestName_1 ("blank");
 namespace nfd {
 namespace pit {
 
@@ -45,6 +54,22 @@ Pit::findOrInsert(const Interest& interest, bool allowInsert)
 {
   // determine which NameTree entry should the PIT entry be attached onto
   const Name& name = interest.getName();
+  // Print PIT status
+  interestName_1 = interest.getName().toUri();
+
+	// Action - Reset
+	if (interestName_1.find("/ndn/metrics/zero") != std::string::npos) {
+		pitm = pm_2.clearPitMetrics(pitm);
+	}			
+			
+	// Action - show
+	if (interestName_1.find("/ndn/metrics/show") != std::string::npos) {
+		pitm.nPitHits--;
+		pm_2.printPitMetrics(pitm);	
+	} 
+		
+
+	 t1 = std::chrono::high_resolution_clock::now();
   bool hasDigest = name.size() > 0 && name[-1].isImplicitSha256Digest();
   size_t nteDepth = name.size() - static_cast<int>(hasDigest);
   nteDepth = std::min(nteDepth, NameTree::getMaxDepth());
@@ -65,7 +90,11 @@ Pit::findOrInsert(const Interest& interest, bool allowInsert)
   const auto& pitEntries = nte->getPitEntries();
   auto it = std::find_if(pitEntries.begin(), pitEntries.end(),
     [&interest, nteDepth] (const shared_ptr<Entry>& entry) {
-      // NameTree guarantees first nteDepth components are equal
+    // PIT hit scenarion
+   	t2 = std::chrono::high_resolution_clock::now();
+    diff = t2-t1;
+  	pitm.pitTotalHitLat += diff.count();
+	pitm.nPitHits++;
       return entry->canMatch(interest, nteDepth);
     });
   if (it != pitEntries.end()) {
@@ -80,6 +109,13 @@ Pit::findOrInsert(const Interest& interest, bool allowInsert)
   auto entry = make_shared<Entry>(interest);
   nte->insertPitEntry(entry);
   ++m_nItems;
+  // PIT miss scenario
+  if (interestName_1.find("nlsr") == std::string::npos){
+	  t2 = std::chrono::high_resolution_clock::now();
+	  diff = t2-t1;
+	  pitm.pitTotalMissLat += diff.count();
+	  pitm.nPitMiss++;
+  }
   return {entry, true};
 }
 
