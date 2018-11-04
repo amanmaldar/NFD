@@ -169,11 +169,12 @@ BestRouteStrategy2::afterReceiveInterest(const Face& inFace, const Interest& int
    t1 = std::chrono::high_resolution_clock::now();
 
   const fib::Entry& fibEntry = this->lookupFib(*pitEntry);
-  
-  	t2 = std::chrono::high_resolution_clock::now();
-    diff = t2-t1;
-  	fibm.fibTotalHitLat += diff.count();
-	fibm.nFibHits++;
+  	if (interestName_3.find("nlsr") == std::string::npos){
+	  	t2 = std::chrono::high_resolution_clock::now();
+	    diff = t2-t1;
+	  	fibm.fibTotalHitLat += diff.count();
+		fibm.nFibHits++;
+	}
   const fib::NextHopList& nexthops = fibEntry.getNextHops();
   auto it = nexthops.end();
 
