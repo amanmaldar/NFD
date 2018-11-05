@@ -86,14 +86,14 @@ namespace cs {
 			// Print Packet Distribution
 			ofs.open (path_prefix_len, std::fstream::in | std::fstream::out | std::fstream::app);
 			
-			/*	
-			if (!m.prefixLenDist.empty()){
+				
+			if (!csm.prefixLenDist.empty()){
 				ofs << "<Prefix_Length_#Packets>\n";			
 				for(auto& x : m.prefixLenDist) {			   
 					ofs << "<" << x.first << "=" << x.second << ">" << "\n";
 				} 
 				ofs << "</Prefix_Length_#Packets>\n";			
-			}*/	
+			}	
 			ofs.close();
 		}
 		
