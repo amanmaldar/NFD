@@ -89,7 +89,7 @@ namespace cs {
 				
 			if (!csm.prefixLenDist.empty()){
 				ofs << "<Prefix_Length_#Packets>\n";			
-				for(auto& x : m.prefixLenDist) {			   
+				for(auto& x : csm.prefixLenDist) {			   
 					ofs << "<" << x.first << "=" << x.second << ">" << "\n";
 				} 
 				ofs << "</Prefix_Length_#Packets>\n";			
