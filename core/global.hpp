@@ -22,6 +22,7 @@ namespace cs {
         double csTotalHitLat;
         double csTotalMissLat;	
 
+		std::map<int, int> prefixLenDist;
 	};
 	
 	struct pitMetrics {

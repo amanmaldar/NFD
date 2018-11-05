@@ -8,6 +8,8 @@ namespace cs {
 	
 		
 		const char *path="/home/lenovo/Dropbox/Thesis/Logs/minindn3/status_2.txt";
+		const char *path_prefix_len="/home/lenovo/Dropbox/Thesis/Logs/minindn3/prefix_len.txt";
+		
 		std::ofstream ofs;
 
 		void sayHello(){
@@ -46,6 +48,8 @@ namespace cs {
 			
 					
 			ofs.close();
+			
+			
 		
 		}
 		// std::setprecision(2)
@@ -78,6 +82,19 @@ namespace cs {
 					<< "   Per_Packet_csLookUp_Hit_Time = " << ((csm.nCsHits!=0) ? csm.csTotalHitLat/csm.nCsHits:0)*1000000 <<" uS\n";	
 				
 				ofs.close();
+				
+			// Print Packet Distribution
+			ofs.open (path_prefix_len, std::fstream::in | std::fstream::out | std::fstream::app);
+			
+			/*	
+			if (!m.prefixLenDist.empty()){
+				ofs << "<Prefix_Length_#Packets>\n";			
+				for(auto& x : m.prefixLenDist) {			   
+					ofs << "<" << x.first << "=" << x.second << ">" << "\n";
+				} 
+				ofs << "</Prefix_Length_#Packets>\n";			
+			}*/	
+			ofs.close();
 		}
 		
 		csMetrics perfMeasure::clearCsMetrics(csMetrics &csm){
@@ -85,6 +102,7 @@ namespace cs {
 			csm.nCsMiss = 0;
 			csm.csTotalMissLat= 0;
 			csm.csTotalHitLat = 0;
+			csm.prefixLenDist.clear();
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "CS_Metrics Reset\n";
 			ofs.close();

@@ -165,8 +165,8 @@ Cs::find(const Interest& interest,
 	auto interestName = interest.getName().toUri();
  
  	// prefix lenght histogram
-	 int n interestNameLength = interest.getName().size();
-	 m.prefixLenDist[n]+=1;
+	 int interestNameLength = interest.getName().size();
+	 csm.prefixLenDist[interestNameLength]+=1;
 	 if (match == last) {
 		
 		
