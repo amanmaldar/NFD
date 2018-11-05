@@ -35,11 +35,11 @@ namespace cs {
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\n------------------ Network_Metrics:------------------------\n"
 					<< 							fixed
-					<< "    		Total_Exp_Resp_Time = " << nm.responseTime/1000 <<" mS\n"
-					<< "       	   Per_Packet_Resp_Time = " << art/1000 <<" mS\n"
-					<< "	      	  Total_Exp_Fwd_Lat = " << nm.fwdLatencyTag/1000 <<" mS\n"
-					<< "    		 Per_Packet_Fwd_Lat = " << afd/1000 <<" mS\n"
-					<< "    	Total_ProcessLat_OnPath = " << nm.processLat/1000 <<" mS\n"
+					<< "    		 Total_Exp_Resp_Time = " << nm.responseTime/1000 <<" mS\n"
+					<< "       	    Per_Packet_Resp_Time = " << art/1000 <<" mS\n"
+					<< "	      	   Total_Exp_Fwd_Lat = " << nm.fwdLatencyTag/1000 <<" mS\n"
+					<< "    		  Per_Packet_Fwd_Lat = " << afd/1000 <<" mS\n"
+					<< "    	 Total_ProcessLat_OnPath = " << nm.processLat/1000 <<" mS\n"
 					<< "   Per_Packet_ProcessLat_OnPath = " << apl/1000 << " mS\n"
 					<< "   	 	   Total_InData_Packets = " << nm.nInData << "\n";
 					
@@ -71,7 +71,7 @@ namespace cs {
 					<< 							fixed
 					<< "    				   nCS_Hits = " << csm.nCsHits <<"\n"	
 					<< "    				   nCS_Miss = " << csm.nCsMiss <<"\n"
-					<< "    				  Hit_Ratio = " << 100*csm.nCsHits/(csm.nCsHits+csm.nCsMiss) <<" %\n"	
+					<< "    			   CS_Hit_Ratio = " << 100*csm.nCsHits/(csm.nCsHits+csm.nCsMiss) <<" %\n"	
 					<< "       Total_csLookUp_Miss_Time = " << csm.csTotalMissLat * 1000000 <<" uS\n"
 					<< "  Per_Packet_csLookUp_Miss_Time = " << ((csm.nCsMiss!=0) ? csm.csTotalMissLat/csm.nCsMiss:0)*1000000 <<" uS\n"
 					<< "        Total_csLookUp_Hit_Time = " << csm.csTotalHitLat * 1000000 <<" uS\n"
@@ -97,7 +97,7 @@ namespace cs {
 					<< 							fixed
 					<< "    				   nPIT_Hits = " << pitm.nPitHits <<"\n"	
 					<< "    				   nPIT_Miss = " << pitm.nPitMiss <<"\n"
-					<< "    				   Hit_Ratio = " << 100*pitm.nPitHits/(pitm.nPitHits+pitm.nPitMiss) <<" %\n"	
+					<< "    			   PIT_Hit_Ratio = " << 100*pitm.nPitHits/(pitm.nPitHits+pitm.nPitMiss) <<" %\n"	
 					<< "       Total_pitLookUp_Miss_Time = " << pitm.pitTotalMissLat * 1000000 <<" uS\n"
 					<< "  Per_Packet_pitLookUp_Miss_Time = " << ((pitm.nPitMiss!=0) ? pitm.pitTotalMissLat/pitm.nPitMiss:0)*1000000 <<" uS\n"
 					<< "        Total_pitLookUp_Hit_Time = " << pitm.pitTotalHitLat * 1000000 <<" uS\n"
@@ -120,9 +120,9 @@ namespace cs {
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\n				FIB_Metrics:\n"
 					<< 							fixed
-					<< "    				   nFIB_Hits = " << fibm.nFibHits <<"\n"	
-					<< "    	Total_fibLookUp_Hit_Time = " << fibm.fibTotalHitLat * 1000000 <<" uS\n"
-					<< "  Per_Packet_fibLookUp_Miss_Time = " << ((fibm.nFibHits!=0) ? fibm.fibTotalHitLat/fibm.nFibHits:0)*1000000 <<" uS\n";
+					<< "    				  nFIB_Hits = " << fibm.nFibHits <<"\n"	
+					<< "       Total_fibLookUp_Hit_Time = " << fibm.fibTotalHitLat * 1000000 <<" uS\n"
+					<< " Per_Packet_fibLookUp_Hit_Time = " << ((fibm.nFibHits!=0) ? fibm.fibTotalHitLat/fibm.nFibHits:0)*1000000 <<" uS\n";
 
 			ofs.close();
 		}
