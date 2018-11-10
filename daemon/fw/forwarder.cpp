@@ -577,7 +577,7 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
     return;
   }
   NFD_LOG_DEBUG("onOutgoingData face=" << outFace.getId() << " data=" << data.getName());
-  interestName_2 = data.getName();
+  interestName_2 = data.getName().toUri();
   	if (interestName_2.find("nlsr") == std::string::npos){
 		nm.nOutData++;
 	}
