@@ -42,10 +42,10 @@ namespace cs {
 					//<< "	      	   Total_Exp_Fwd_Lat = " << nm.fwdLatencyTag/1000 <<" mS\n"
 					<< "    	 Avg. Forwarding Latency = " << afd/1000 <<" mS\n"
 					//<< "    	 Total_ProcessLat_OnPath = " << nm.processLat/1000 <<" mS\n"
-					<< "        Avg. Processing Latency = " << apl/1000 << " mS\n"
-					<< "   	 	   Total InData Packets = " << nm.nInData << "\n"
-					<< "	  Total Interests Satisfied = " << nm.nSatisfiedInterests << "\n"
-					<< "	             Avg. Hop Count = " << ((nm.nInData!=0) ? nm.intHopsTag/nm.nInData:0)<<"\n";
+					<< "         Avg. Processing Latency = " << apl/1000 << " mS\n"
+					<< "   	 	    Total InData Packets = " << nm.nInData << "\n"
+					<< "	   Total Interests Satisfied = " << nm.nSatisfiedInterests << "\n"
+					<< "	              Avg. Hop Count = " << ((nm.nInData!=0) ? nm.intHopsTag/nm.nInData:0)<<"\n";
 					
 			
 					
@@ -76,7 +76,7 @@ namespace cs {
 		void perfMeasure::printCsMetrics(csMetrics csm){
 		auto avgCsHitLat = ((csm.nCsMiss!=0) ? csm.csTotalMissLat/csm.nCsMiss:0)*1000000;
 		auto avgCsMissLat = ((csm.nCsHits!=0) ? csm.csTotalHitLat/csm.nCsHits:0)*1000000;
-		auto avgCsLookup = ((avgCsHitLat+avgCsMissLat)!=0) ? (avgCsHitLat+avgCsMissLat)/2:0;
+		auto avgCsLookup = ((avgCsHitLat+avgCsMissLat)!=0) ? (csm.csTotalMissLat+csm.csTotalHitLat)/(csm.nCsHits+csm.nCsMiss):0;
 				ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\n				CS_Metrics:\n"
 					<< 							fixed
@@ -96,11 +96,10 @@ namespace cs {
 				
 			if (!csm.prefixLenDist.empty()){
 				ofs << "Prefix Length Distribution:>\n";
-				ofs << "	Arrangment: PrefixLength=#Packets";				
+				ofs << "	Arrangment: <PrefixLength=#Packets>\n";				
 				for(auto& x : csm.prefixLenDist) {			   
 				ofs << " <" << x.first << "=" << x.second << "> ";
-				} 
-				ofs << "</Prefix_Length_#Packets>\n";			
+				} 	
 			}	
 			ofs.close();
 		}
@@ -120,7 +119,7 @@ namespace cs {
 		void perfMeasure::printPitMetrics(pitMetrics pitm){
 		auto avgPitMissLat = ((pitm.nPitMiss!=0) ? pitm.pitTotalMissLat/pitm.nPitMiss:0)*1000000 ;
 		auto avgPitHitLat = ((pitm.nPitHits!=0) ? pitm.pitTotalHitLat/pitm.nPitHits:0)*1000000;
-		auto avgPitLookupLat = ((avgPitMissLat+avgPitHitLat)!=0) ? (avgPitMissLat+avgPitHitLat)/2:0;
+		auto avgPitLookupLat = ((avgPitMissLat+avgPitHitLat)!=0) ? (pitm.pitTotalMissLat+pitm.pitTotalHitLat)/(pitm.nPitHits+pitm.nPitMiss):0;
 				ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\n				PIT_Metrics:\n"
 					<< 							fixed
