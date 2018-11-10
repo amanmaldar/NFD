@@ -112,11 +112,14 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   ++m_counters.nInInterests;
 
 	interestName_2 = interest.getName().toUri();
-	
+	if (interestName_2.find("nlsr") == std::string::npos){
 	auto intHopsTag = interest.getTag<lp::intHopsTag>();
-	if (*intHopsTag!=1){
-		nm.nInInterests++;	// increment only on forwarding routers. source router does not increment it 
+		if (*intHopsTag!=1){
+			nm.nInInterests++;	// increment only on forwarding routers. source router does not increment it 
 	}
+	}
+	
+
 
 	if (interestName_2.find("/ndn/metrics/show") != std::string::npos) {
 		pm.printNwMetrics(nm);
@@ -344,7 +347,9 @@ Forwarder::onOutgoingInterest(const shared_ptr<pit::Entry>& pitEntry, Face& outF
   // send Interest
   outFace.sendInterest(interest);
   ++m_counters.nOutInterests;
-  nm.nOutInterests++;
+	if (interestName_2.find("nlsr") == std::string::npos){
+	  nm.nOutInterests++;
+  	}
 }
 
 void
@@ -572,7 +577,10 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
     return;
   }
   NFD_LOG_DEBUG("onOutgoingData face=" << outFace.getId() << " data=" << data.getName());
-	nm.nOutData++;
+  interestName_2 = data.getName();
+  	if (interestName_2.find("nlsr") == std::string::npos){
+		nm.nOutData++;
+	}
 
   // /localhost scope control
   bool isViolatingLocalhost = outFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL &&
