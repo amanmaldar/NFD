@@ -43,10 +43,14 @@ namespace cs {
 					<< "    	 Avg. Forwarding Latency = " << afd/1000 <<" mS\n"
 					//<< "    	 Total_ProcessLat_OnPath = " << nm.processLat/1000 <<" mS\n"
 					<< "         Avg. Processing Latency = " << apl/1000 << " mS\n"
-					<< "   	 	    Total InData Packets = " << nm.nInData << "\n"
 					<< "	   Total Interests Satisfied = " << nm.nSatisfiedInterests << "\n"
-					<< "	              Avg. Hop Count = " << ((nm.nInData!=0) ? nm.intHopsTag/nm.nInData:0)<<"\n";
-					
+					<< "	              Avg. Hop Count = " << ((nm.nInData!=0) ? float(nm.intHopsTag)/float(nm.nInData:0))<<"\n";
+				
+				ofs	<< "\n					Device_Metrics:\n"
+					<< "   	 	     nInInterest Packets = " << nm.nInInterests << "\n"
+					<< "   	 	    nOutInterest Packets = " << nm.nOutInterests << "\n"
+					<< "   	 	     	 nInData Packets = " << nm.nInData << "\n"
+					<< "   	 	     	nOutData Packets = " << nm.nOutData << "\n";
 			
 					
 			ofs.close();
@@ -59,10 +63,14 @@ namespace cs {
 		networkMetrics perfMeasure::clearNwMetrics(networkMetrics &nm){
 			nm.responseTime = 0;
 			nm.fwdLatencyTag = 0; 
-			nm.nInData = 0;
+
 			nm.processLat = 0;
 			nm.nSatisfiedInterests=0;
 			nm.intHopsTag =0;
+			nm.nInData = 0;
+			nm.nOutData = 0;
+			nm.nInInterests= 0;
+			nm.nOutInterests = 0;
 
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\nNetwork_Metrics Reset\n";
@@ -87,7 +95,7 @@ namespace cs {
 					<< "           Avg. CS Miss Latency = " <<  avgCsHitLat <<" uS\n"
 					//<< "        Total_csLookUp_Hit_Time = " << csm.csTotalHitLat * 1000000 <<" uS\n"
 					<< "            Avg. CS Hit Latency = " << avgCsMissLat <<" uS\n"	
-					<< "         Avg. CS Lookup Latency = " << avgCsLookup <<" uS\n";	
+					<< "         Avg. CS Lookup Latency = " << avgCsLookup * 1000000 <<" uS\n";	
 				ofs.close();
 				
 			// Print Packet Distribution
@@ -95,8 +103,7 @@ namespace cs {
 			
 				
 			if (!csm.prefixLenDist.empty()){
-				ofs << "Prefix Length Distribution:>\n";
-				ofs << "	Arrangment: <PrefixLength=#Packets>\n";				
+				ofs << "\nPrefix Length Distribution: <PrefixLength=#Packets> \n";				
 				for(auto& x : csm.prefixLenDist) {			   
 				ofs << " <" << x.first << "=" << x.second << "> ";
 				} 	
@@ -130,7 +137,7 @@ namespace cs {
 					<< "           Avg. PIT Miss Latency = " << avgPitMissLat <<" uS\n"
 					//<< "        Total_pitLookUp_Hit_Time = " << pitm.pitTotalHitLat * 1000000 <<" uS\n"
 					<< "            Avg. PIT Hit Latency = " << avgPitHitLat <<" uS\n"	
-					<< "     Avg. PIT Processing Latency = " << avgPitLookupLat <<" uS\n";	
+					<< "     Avg. PIT Processing Latency = " << avgPitLookupLat*1000000 <<" uS\n";	
 				ofs.close();
 		}
 		

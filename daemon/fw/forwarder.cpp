@@ -112,7 +112,11 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   ++m_counters.nInInterests;
 
 	interestName_2 = interest.getName().toUri();
-
+	
+	auto intHopsTagField = interest.getTag<lp::intHopsTagField>();
+	if (*intHopsTagField!=1){
+		nm.nInInterests++;	// increment only on forwarding routers. source router does not increment it 
+	}
 
 	if (interestName_2.find("/ndn/metrics/show") != std::string::npos) {
 		pm.printNwMetrics(nm);
@@ -340,6 +344,7 @@ Forwarder::onOutgoingInterest(const shared_ptr<pit::Entry>& pitEntry, Face& outF
   // send Interest
   outFace.sendInterest(interest);
   ++m_counters.nOutInterests;
+  nm.nOutInterests++;
 }
 
 void
@@ -441,7 +446,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	}
   	
 	// No action on Forwarder. Those are handled by Link Layer
-
+	nm.nInData++;
+	
     // check if we are back to consumer
 	intHopsTag = interestInPit.getTag<lp::intHopsTag>();
 	dataProduceTimeTag = data.getTag<lp::dataProduceTimeTag>();
@@ -467,7 +473,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		// update the global counters
 		if (inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL){
 			nm.intHopsTag += *intHopsTag ;
-			nm.nInData++;
+			//nm.nInData++;
 			nm.fwdLatencyTag += fwdLatency;
 			nm.responseTime += responseTime;
 			nm.processLat += *intProcessingTimeTag;
@@ -566,6 +572,7 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
     return;
   }
   NFD_LOG_DEBUG("onOutgoingData face=" << outFace.getId() << " data=" << data.getName());
+	nm.nOutData++;
 
   // /localhost scope control
   bool isViolatingLocalhost = outFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL &&
