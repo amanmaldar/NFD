@@ -37,15 +37,15 @@ namespace cs {
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\n------------------ Network_Metrics:------------------------\n"
 					<< 							fixed
-					<< "    		 Total_Exp_Resp_Time = " << nm.responseTime/1000 <<" mS\n"
-					<< "       	    Per_Packet_Resp_Time = " << art/1000 <<" mS\n"
-					<< "	      	   Total_Exp_Fwd_Lat = " << nm.fwdLatencyTag/1000 <<" mS\n"
-					<< "    		  Per_Packet_Fwd_Lat = " << afd/1000 <<" mS\n"
-					<< "    	 Total_ProcessLat_OnPath = " << nm.processLat/1000 <<" mS\n"
-					<< "   Per_Packet_ProcessLat_OnPath = " << apl/1000 << " mS\n"
-					<< "   	 	   Total_InData_Packets = " << nm.nInData << "\n"
-					<< "	       nSatisfied_Interests = " << nm.nSatisfiedInterests << "\n"
-					<< "	              Avg_Hop_Count = " << ((nm.nInData!=0) ? nm.intHopsTag/nm.nInData:0)<<"\n";
+					//<< "    		 Total_Exp_Resp_Time = " << nm.responseTime/1000 <<" mS\n"
+					<< "       	      Avg. Response Time = " << art/1000 <<" mS\n"
+					//<< "	      	   Total_Exp_Fwd_Lat = " << nm.fwdLatencyTag/1000 <<" mS\n"
+					<< "    	 Avg. Forwarding Latency = " << afd/1000 <<" mS\n"
+					//<< "    	 Total_ProcessLat_OnPath = " << nm.processLat/1000 <<" mS\n"
+					<< "        Avg. Processing Latency = " << apl/1000 << " mS\n"
+					<< "   	 	   Total InData Packets = " << nm.nInData << "\n"
+					<< "	  Total Interests Satisfied = " << nm.nSatisfiedInterests << "\n"
+					<< "	             Avg. Hop Count = " << ((nm.nInData!=0) ? nm.intHopsTag/nm.nInData:0)<<"\n";
 					
 			
 					
@@ -74,27 +74,31 @@ namespace cs {
 		}
 		
 		void perfMeasure::printCsMetrics(csMetrics csm){
+		auto avgCsHitLat = ((csm.nCsMiss!=0) ? csm.csTotalMissLat/csm.nCsMiss:0)*1000000;
+		auto avgCsMissLat = ((csm.nCsHits!=0) ? csm.csTotalHitLat/csm.nCsHits:0)*1000000;
+		auto avgCsLookup = ((avgCsHitLat+avgCsMissLat)!=0) ? (avgCsHitLat+avgCsMissLat)/2:0;
 				ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\n				CS_Metrics:\n"
 					<< 							fixed
-					<< "    				   nCS_Hits = " << csm.nCsHits <<"\n"	
-					<< "    				   nCS_Miss = " << csm.nCsMiss <<"\n"
-					<< "    			   CS_Hit_Ratio = " << 100*csm.nCsHits/(csm.nCsHits+csm.nCsMiss) <<" %\n"	
-					<< "       Total_csLookUp_Miss_Time = " << csm.csTotalMissLat * 1000000 <<" uS\n"
-					<< "  Per_Packet_csLookUp_Miss_Time = " << ((csm.nCsMiss!=0) ? csm.csTotalMissLat/csm.nCsMiss:0)*1000000 <<" uS\n"
-					<< "        Total_csLookUp_Hit_Time = " << csm.csTotalHitLat * 1000000 <<" uS\n"
-					<< "   Per_Packet_csLookUp_Hit_Time = " << ((csm.nCsHits!=0) ? csm.csTotalHitLat/csm.nCsHits:0)*1000000 <<" uS\n";	
-				
+					<< "    				   nCS Hits = " << csm.nCsHits <<"\n"	
+					<< "    				   nCS Miss = " << csm.nCsMiss <<"\n"
+					<< "    			    CS Hit Rate = " << 100*csm.nCsHits/(csm.nCsHits+csm.nCsMiss) <<" %\n"	
+					//<< "       Total_csLookUp_Miss_Time = " << csm.csTotalMissLat * 1000000 <<" uS\n"
+					<< "           Avg. CS Miss Latency = " <<  avgCsHitLat <<" uS\n"
+					//<< "        Total_csLookUp_Hit_Time = " << csm.csTotalHitLat * 1000000 <<" uS\n"
+					<< "            Avg. CS Hit Latency = " << avgCsMissLat <<" uS\n"	
+					<< "         Avg. CS Lookup Latency = " << avgCsLookup <<" uS\n";	
 				ofs.close();
 				
 			// Print Packet Distribution
-			ofs.open (path_prefix_len, std::fstream::in | std::fstream::out | std::fstream::app);
+			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 			
 				
 			if (!csm.prefixLenDist.empty()){
-				ofs << "<Prefix_Length_#Packets>\n";			
+				ofs << "Prefix Length Distribution:>\n";
+				ofs << "	Arrangment: PrefixLength=#Packets"				
 				for(auto& x : csm.prefixLenDist) {			   
-					ofs << "<" << x.first << "=" << x.second << ">" << "\n";
+				ofs << " <" << x.first << "=" << x.second << "> ";
 				} 
 				ofs << "</Prefix_Length_#Packets>\n";			
 			}	
@@ -114,16 +118,20 @@ namespace cs {
 		}
 		
 		void perfMeasure::printPitMetrics(pitMetrics pitm){
+		auto avgPitMissLat = ((pitm.nPitMiss!=0) ? pitm.pitTotalMissLat/pitm.nPitMiss:0)*1000000 ;
+		auto avgPitHitLat = ((pitm.nPitHits!=0) ? pitm.pitTotalHitLat/pitm.nPitHits:0)*1000000;
+		auto avgPitLookupLat = ((avgPitMissLat+avgPitHitLat)!=0) ? (avgPitMissLat+avgPitHitLat)/2:0;
 				ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\n				PIT_Metrics:\n"
 					<< 							fixed
-					<< "    				   nPIT_Hits = " << pitm.nPitHits <<"\n"	
-					<< "    				   nPIT_Miss = " << pitm.nPitMiss <<"\n"
-					<< "    			   PIT_Hit_Ratio = " << 100*pitm.nPitHits/(pitm.nPitHits+pitm.nPitMiss) <<" %\n"	
-					<< "       Total_pitLookUp_Miss_Time = " << pitm.pitTotalMissLat * 1000000 <<" uS\n"
-					<< "  Per_Packet_pitLookUp_Miss_Time = " << ((pitm.nPitMiss!=0) ? pitm.pitTotalMissLat/pitm.nPitMiss:0)*1000000 <<" uS\n"
-					<< "        Total_pitLookUp_Hit_Time = " << pitm.pitTotalHitLat * 1000000 <<" uS\n"
-					<< "   Per_Packet_pitLookUp_Hit_Time = " << ((pitm.nPitHits!=0) ? pitm.pitTotalHitLat/pitm.nPitHits:0)*1000000 <<" uS\n";	
+					<< "    				   nPIT Hits = " << pitm.nPitHits <<"\n"	
+					<< "    				   nPIT Miss = " << pitm.nPitMiss <<"\n"
+					<< "    			    PIT Hit Rate = " << 100*pitm.nPitHits/(pitm.nPitHits+pitm.nPitMiss) <<" %\n"	
+					//<< "       Total_pitLookUp_Miss_Time = " << pitm.pitTotalMissLat * 1000000 <<" uS\n"
+					<< "           Avg. PIT Miss Latency = " << avgPitMissLat <<" uS\n"
+					//<< "        Total_pitLookUp_Hit_Time = " << pitm.pitTotalHitLat * 1000000 <<" uS\n"
+					<< "            Avg. PIT Hit Latency = " << avgPitHitLat <<" uS\n"	
+					<< "     Avg. PIT Processing Latency = " << avgPitLookupLat <<" uS\n";	
 				ofs.close();
 		}
 		
@@ -142,9 +150,9 @@ namespace cs {
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\n				FIB_Metrics:\n"
 					<< 							fixed
-					<< "    				  nFIB_Hits = " << fibm.nFibHits <<"\n"	
-					<< "       Total_fibLookUp_Hit_Time = " << fibm.fibTotalHitLat * 1000000 <<" uS\n"
-					<< " Per_Packet_fibLookUp_Hit_Time = " << ((fibm.nFibHits!=0) ? fibm.fibTotalHitLat/fibm.nFibHits:0)*1000000 <<" uS\n";
+					<< "    				  nFIB Hits = " << fibm.nFibHits <<"\n"	
+					//<< "       Total_fibLookUp_Hit_Time = " << fibm.fibTotalHitLat * 1000000 <<" uS\n"
+					<< "             Forwarding Latency = " << ((fibm.nFibHits!=0) ? fibm.fibTotalHitLat/fibm.nFibHits:0)*1000000 <<" uS\n";
 
 			ofs.close();
 		}
