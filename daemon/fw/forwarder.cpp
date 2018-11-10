@@ -113,8 +113,8 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
 	interestName_2 = interest.getName().toUri();
 	
-	auto intHopsTagField = interest.getTag<lp::intHopsTagField>();
-	if (*intHopsTagField!=1){
+	auto intHopsTag = interest.getTag<lp::intHopsTag>();
+	if (*intHopsTag!=1){
 		nm.nInInterests++;	// increment only on forwarding routers. source router does not increment it 
 	}
 
