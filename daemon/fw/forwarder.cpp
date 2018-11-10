@@ -437,7 +437,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		intHopsTag = interestInPit.getTag<lp::intHopsTag>();
 		data.setTag(make_shared<lp::intHopsTag>(*intHopsTag));
 		NFD_LOG_DEBUG("onincomingdata fresh data: " << data.getName() << "  hop count " <<  *intHopsTag  << "  processLat: " << *intProcessingTimeTag << " ");		
-
+		nm.nSatisfiedInterests++;
 	}
   	
 	// No action on Forwarder. Those are handled by Link Layer
@@ -466,6 +466,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		
 		// update the global counters
 		if (inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL){
+			nm.intHopsTag++;
 			nm.nInData++;
 			nm.fwdLatencyTag += fwdLatency;
 			nm.responseTime += responseTime;

@@ -47,6 +47,8 @@ namespace cs {
 		uint64_t fwdLatencyTag;
 		uint64_t nInData;
 		uint64_t processLat;
+		uint64_t nSatisfiedInterests;
+		uint64_t intHopsTag;
 		
 		
 

@@ -43,7 +43,9 @@ namespace cs {
 					<< "    		  Per_Packet_Fwd_Lat = " << afd/1000 <<" mS\n"
 					<< "    	 Total_ProcessLat_OnPath = " << nm.processLat/1000 <<" mS\n"
 					<< "   Per_Packet_ProcessLat_OnPath = " << apl/1000 << " mS\n"
-					<< "   	 	   Total_InData_Packets = " << nm.nInData << "\n";
+					<< "   	 	   Total_InData_Packets = " << nm.nInData << "\n"
+					<< "	       nSatisfied_Interests = " << nm.nSatisfiedInterests << "\n"
+					<< "	              Avg_Hop_Count = " << ((nm.nInData!=0) ? nm.intHopsTag/nm.nInData:0)<<"\n";
 					
 			
 					
@@ -59,6 +61,8 @@ namespace cs {
 			nm.fwdLatencyTag = 0; 
 			nm.nInData = 0;
 			nm.processLat = 0;
+			nm.nSatisfiedInterests=0;
+			nm.intHopsTag =0;
 
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\nNetwork_Metrics Reset\n";
@@ -119,7 +123,7 @@ namespace cs {
 					<< "       Total_pitLookUp_Miss_Time = " << pitm.pitTotalMissLat * 1000000 <<" uS\n"
 					<< "  Per_Packet_pitLookUp_Miss_Time = " << ((pitm.nPitMiss!=0) ? pitm.pitTotalMissLat/pitm.nPitMiss:0)*1000000 <<" uS\n"
 					<< "        Total_pitLookUp_Hit_Time = " << pitm.pitTotalHitLat * 1000000 <<" uS\n"
-					<< "   Per_Packet_pitLookUp_Hit_Time = " << ((pitm.nPitHits!=0) ? pitm.pitTotalHitLat/pitm.nPitHits:0)*100000 <<" uS\n";	
+					<< "   Per_Packet_pitLookUp_Hit_Time = " << ((pitm.nPitHits!=0) ? pitm.pitTotalHitLat/pitm.nPitHits:0)*1000000 <<" uS\n";	
 				ofs.close();
 		}
 		
