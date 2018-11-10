@@ -44,7 +44,7 @@ namespace cs {
 					//<< "    	 Total_ProcessLat_OnPath = " << nm.processLat/1000 <<" mS\n"
 					<< "         Avg. Processing Latency = " << apl/1000 << " mS\n"
 					<< "	   Total Interests Satisfied = " << nm.nSatisfiedInterests << "\n"
-					<< "	              Avg. Hop Count = " << ((nm.nInData!=0) ? (float(nm.intHopsTag)/float(nm.nInData0)):0 <<"\n";
+					<< "	              Avg. Hop Count = " << ((nm.nInData!=0) ? (float(nm.intHopsTag)/float(nm.nInData)):0 <<"\n";
 				
 				ofs	<< "\n					Device_Metrics:\n"
 					<< "   	 	     nInInterest Packets = " << nm.nInInterests << "\n"
