@@ -96,7 +96,7 @@ namespace cs {
 				
 			if (!csm.prefixLenDist.empty()){
 				ofs << "Prefix Length Distribution:>\n";
-				ofs << "	Arrangment: PrefixLength=#Packets"				
+				ofs << "	Arrangment: PrefixLength=#Packets";				
 				for(auto& x : csm.prefixLenDist) {			   
 				ofs << " <" << x.first << "=" << x.second << "> ";
 				} 
