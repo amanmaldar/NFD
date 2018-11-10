@@ -466,7 +466,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		
 		// update the global counters
 		if (inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL){
-			nm.intHopsTag += intHopsTag ;
+			nm.intHopsTag += *intHopsTag ;
 			nm.nInData++;
 			nm.fwdLatencyTag += fwdLatency;
 			nm.responseTime += responseTime;
