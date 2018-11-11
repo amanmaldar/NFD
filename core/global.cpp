@@ -100,9 +100,9 @@ namespace cs {
 				
 			// Print Packet Distribution
 			ofs.open (path_prefix_len, std::fstream::in | std::fstream::out | std::fstream::app);
-			ofs << "printing 5000 \n"
+			ofs << "printing 5000 \n";
 			for (auto i=csm.myvector.begin();i!=csm.myvector.end();i++){
-				<< *i << "\n"
+				ofs << *i << "\n";
 			}
 			ofs << "done";
 			if (!csm.prefixLenDist.empty()){
