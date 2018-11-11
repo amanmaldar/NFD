@@ -100,11 +100,11 @@ namespace cs {
 				
 			// Print Packet Distribution
 			ofs.open (path_prefix_len, std::fstream::in | std::fstream::out | std::fstream::app);
-			std::cout << "printing 5000 \n";
+			ofs << "printing 5000 \n"
 			for (auto i=csm.myvector.begin();i!=csm.myvector.end();i++){
-				std::cout << *i << "\n";
+				<< *i << "\n"
 			}
-				
+			ofs << "done";
 			if (!csm.prefixLenDist.empty()){
 				ofs << "\nPrefix Length Distribution: <PrefixLength=#Packets> \n";				
 				for(auto& x : csm.prefixLenDist) {			   
@@ -119,6 +119,7 @@ namespace cs {
 			csm.nCsMiss = 0;
 			csm.csTotalMissLat= 0;
 			csm.csTotalHitLat = 0;
+			csm.myvector.clear()
 			csm.prefixLenDist.clear();
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "CS_Metrics Reset\n";
