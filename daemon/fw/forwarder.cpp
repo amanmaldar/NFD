@@ -111,15 +111,6 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   interest.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
   ++m_counters.nInInterests;
 
-
-/*
-	interestName_2 = interest.getName().toUri();
-	if (interestName_2.find("nlsr") == std::string::npos){
-	auto intHopsTag = interest.getTag<lp::intHopsTag>();
-		if (*intHopsTag!=1){
-			nm.nInInterests++;	// increment only on forwarding routers. source router does not increment it 
-	}
-	}*/
 	nm.nInInterests++;
 	
 
