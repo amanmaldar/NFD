@@ -107,7 +107,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   	
   // receive Interest
   NFD_LOG_DEBUG("onIncomingInterest face=" << inFace.getId() <<
-                " interest=" << interest.getName() << "size:" << intSize);
+                " interest=" << interest.getName() ); // << "size:" << intSize);
   interest.setTag(make_shared<lp::IncomingFaceIdTag>(inFace.getId()));
   ++m_counters.nInInterests;
 
