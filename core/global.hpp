@@ -9,6 +9,7 @@
 #include <iomanip>
 #include <ctime>
 #include <iostream>
+#include <vector>
 
 
 
@@ -20,7 +21,8 @@ namespace cs {
 		uint64_t nCsHits;
 		uint64_t nCsMiss;
         double csTotalHitLat;
-        double csTotalMissLat;	
+        double csTotalMissLat;
+		std::vector<int> myvector;	
 
 		std::map<int, int> prefixLenDist;
 	};

@@ -179,6 +179,7 @@ Cs::find(const Interest& interest,
 			diff = t2-t1;
 			csm.nCsMiss++;
 			csm.csTotalMissLat += diff.count();
+			myvector.push_back(diff.count());
 		}
 
 		// Read the interest name. It is used everywhere.

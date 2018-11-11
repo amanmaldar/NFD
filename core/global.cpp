@@ -99,8 +99,11 @@ namespace cs {
 				ofs.close();
 				
 			// Print Packet Distribution
-			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
+			ofs.open (path_prefix_len, std::fstream::in | std::fstream::out | std::fstream::app);
 			
+			for (auto i=nm.myvector.begin();i!=nm.myvector.end();i++){
+				std::cout << *i << "\n";
+			}
 				
 			if (!csm.prefixLenDist.empty()){
 				ofs << "\nPrefix Length Distribution: <PrefixLength=#Packets> \n";				
