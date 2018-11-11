@@ -22,7 +22,7 @@ namespace cs {
 		uint64_t nCsMiss;
         double csTotalHitLat;
         double csTotalMissLat;
-		std::vector<uint64_t> myvector;	
+		std::vector<double> myvector;	
 
 		std::map<int, int> prefixLenDist;
 	};
