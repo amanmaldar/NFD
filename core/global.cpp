@@ -8,7 +8,7 @@ namespace cs {
 	
 		
 		const char *path="/home/lenovo/Dropbox/Thesis/Logs/minindn3/status_2.txt";
-		const char *path_prefix_len="/home/lenovo/Dropbox/Thesis/Logs/minindn3/prefix_len.txt";
+		const char *path_prefix_len="/home/lenovo/Dropbox/Thesis/Logs/minindn3/5000.txt";
 		
 		std::ofstream ofs;
 
@@ -100,7 +100,7 @@ namespace cs {
 				
 			// Print Packet Distribution
 			ofs.open (path_prefix_len, std::fstream::in | std::fstream::out | std::fstream::app);
-			
+			std::cout << "printing 5000 \n";
 			for (auto i=csm.myvector.begin();i!=csm.myvector.end();i++){
 				std::cout << *i << "\n";
 			}
