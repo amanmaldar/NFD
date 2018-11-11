@@ -101,7 +101,7 @@ namespace cs {
 			// Print Packet Distribution
 			ofs.open (path_prefix_len, std::fstream::in | std::fstream::out | std::fstream::app);
 			
-			for (auto i=nm.myvector.begin();i!=nm.myvector.end();i++){
+			for (auto i=csm.myvector.begin();i!=csm.myvector.end();i++){
 				std::cout << *i << "\n";
 			}
 				
