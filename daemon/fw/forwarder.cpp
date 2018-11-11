@@ -103,7 +103,7 @@ Forwarder::~Forwarder() = default;
 void
 Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 {
-		auto intSize = std::to_string(interest.wireEncode().size());
+	//	auto intSize = std::to_string(interest.wireEncode().size());
   	
   // receive Interest
   NFD_LOG_DEBUG("onIncomingInterest face=" << inFace.getId() <<
