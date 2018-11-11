@@ -119,7 +119,7 @@ namespace cs {
 			csm.nCsMiss = 0;
 			csm.csTotalMissLat= 0;
 			csm.csTotalHitLat = 0;
-			csm.myvector.clear()
+			csm.myvector.clear();
 			csm.prefixLenDist.clear();
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "CS_Metrics Reset\n";
