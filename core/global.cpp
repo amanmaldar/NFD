@@ -54,7 +54,7 @@ namespace cs {
 				
 				ofs	<< "\n					Throughput:\n"
 					<< "   	 	     			intSize = " << nm.intSize << "\n"
-					<< "   	 	     			dataSize = " << nm.dataSize << "\n"
+					<< "   	 	     			dataSize = " << nm.dataSize << "\n";
 					
 			ofs.close();
 			
