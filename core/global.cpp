@@ -51,7 +51,10 @@ namespace cs {
 					<< "   	 	    nOutInterest Packets = " << nm.nOutInterests << "\n"
 					<< "   	 	     	 nInData Packets = " << nm.nInData << "\n"
 					<< "   	 	     	nOutData Packets = " << nm.nOutData << "\n";
-			
+				
+				ofs	<< "\n					Throughput:\n"
+					<< "   	 	     			intSize = " << nm.intSize << "\n"
+					<< "   	 	     			dataSize = " << nm.dataSize << "\n"
 					
 			ofs.close();
 			
@@ -71,7 +74,9 @@ namespace cs {
 			nm.nOutData = 0;
 			nm.nInInterests= 0;
 			nm.nOutInterests = 0;
-
+			nm.dataSize = 0;
+			nm.intSize = 0;
+			
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\nNetwork_Metrics Reset\n";
 

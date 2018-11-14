@@ -103,8 +103,8 @@ Forwarder::~Forwarder() = default;
 void
 Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 {
-	//	auto intSize = std::to_string(interest.wireEncode().size());
-  	
+	auto intSize = std::to_string(interest.wireEncode().size());
+  	nm.intSize += intSize;
   // receive Interest
   NFD_LOG_DEBUG("onIncomingInterest face=" << inFace.getId() <<
                 " interest=" << interest.getName() ); // << "size:" << intSize);
@@ -469,6 +469,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		NFD_LOG_DEBUG("onincomingdata results fwd_latency: " << fwdLatency << \
 		"  hop count: " << *intHopsTag << " RespTime " <<  responseTime <<  " processLat: " << *intProcessingTimeTag << " " << data.getName());
 		
+		// throughput measurement for data
+		auto dataSize = std::to_string(data.wireEncode().size());
 		// update the global counters
 		if (inFace.getScope() == ndn::nfd::FACE_SCOPE_NON_LOCAL){
 			nm.intHopsTag += *intHopsTag ;
@@ -476,6 +478,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 			nm.fwdLatencyTag += fwdLatency;
 			nm.responseTime += responseTime;
 			nm.processLat += *intProcessingTimeTag;
+			nm.dataSize += dataSize;
 			NFD_LOG_DEBUG("onincomingdata non_local" << data.getName());
 		}
 	}

@@ -56,6 +56,8 @@ namespace cs {
 		uint64_t nInInterests;
 		uint64_t nOutInterests;
 		
+		uint64_t dataSize;
+		uint64_t intSize;		
 
 	};
 	void sayHello();
