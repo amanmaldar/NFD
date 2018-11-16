@@ -9,7 +9,8 @@ namespace cs {
 		
 		const char *path="/home/lenovo/Dropbox/Thesis/Logs/minindn3/status_2.txt";
 		//const char *path_prefix_len="/home/lenovo/Dropbox/Thesis/Logs/minindn3/5000.txt";
-		const char *path_prefix_len="/home/amaldar/Logs/status_2.txt";
+		const char *path="/home/amaldar/Logs/status_2.txt";
+		const char *path_prefix_len="/home/amaldar/Logs/5000.txt";
 		std::ofstream ofs;
 
 		void sayHello(){
