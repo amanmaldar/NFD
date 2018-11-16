@@ -67,7 +67,7 @@ Pit::findOrInsert(const Interest& interest, bool allowInsert)
 			
 	// Action - show
 	if (interestName_1.find("/ndn/metrics/show") != std::string::npos) {
-		pitm.nPitHits--;
+		//pitm.nPitHits--;
 		pm_2.printPitMetrics(pitm);	
 	} 
 		
