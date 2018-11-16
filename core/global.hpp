@@ -29,8 +29,8 @@ namespace cs {
 	
 	struct pitMetrics {
 
-		uint64_t nPitHits;
-		uint64_t nPitMiss;
+		uint64_t nPitHits = 0;
+		uint64_t nPitMiss = 0;
         double pitTotalHitLat;
         double pitTotalMissLat;	
 
