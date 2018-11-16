@@ -28,7 +28,7 @@
 #include "core/logger.hpp"
 
 // Performance metrics initialization
-nfd::cs::fibMetrics fibm;
+nfd::cs::fibMetrics fibm = {0,0};
 nfd::cs::perfMeasure pm_3;
 std::string interestName_3 ("blank");
 

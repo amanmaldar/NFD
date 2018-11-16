@@ -26,7 +26,7 @@
 #include "pit.hpp"
 
 // Performance metrics initialization
-nfd::cs::pitMetrics pitm;
+nfd::cs::pitMetrics pitm = {0,0,0,0};
 nfd::cs::perfMeasure pm_2;
 
 
