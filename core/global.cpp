@@ -96,7 +96,7 @@ namespace cs {
 					<< 							fixed
 					<< "    				   nCS Hits = " << csm.nCsHits <<"\n"	
 					<< "    				   nCS Miss = " << csm.nCsMiss <<"\n"
-					<< "    			    CS Hit Rate = " << 100*csm.nCsHits/(csm.nCsHits+csm.nCsMiss) <<" %\n"	
+					<< "    			    CS Hit Rate = " << 100*(csm.nCsHits/(csm.nCsHits+csm.nCsMiss)) <<" %\n"	
 					//<< "       Total_csLookUp_Miss_Time = " << csm.csTotalMissLat * 1000000 <<" uS\n"
 					<< "           Avg. CS Miss Latency = " <<  avgCsHitLat <<" uS\n"
 					//<< "        Total_csLookUp_Hit_Time = " << csm.csTotalHitLat * 1000000 <<" uS\n"
@@ -142,7 +142,7 @@ namespace cs {
 					<< 							fixed
 					<< "    				   nPIT Hits = " << pitm.nPitHits <<"\n"	
 					<< "    				   nPIT Miss = " << pitm.nPitMiss <<"\n"
-					<< "    			    PIT Hit Rate = " << 100*pitm.nPitHits/(pitm.nPitHits+pitm.nPitMiss) <<" %\n"	
+					<< "    			    PIT Hit Rate = " << 100*(pitm.nPitHits/(pitm.nPitHits+pitm.nPitMiss)) <<" %\n"	
 					//<< "       Total_pitLookUp_Miss_Time = " << pitm.pitTotalMissLat * 1000000 <<" uS\n"
 					<< "           Avg. PIT Miss Latency = " << avgPitMissLat <<" uS\n"
 					//<< "        Total_pitLookUp_Hit_Time = " << pitm.pitTotalHitLat * 1000000 <<" uS\n"
