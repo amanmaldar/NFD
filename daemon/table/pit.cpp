@@ -104,7 +104,7 @@ Pit::findOrInsert(const Interest& interest, bool allowInsert)
    	t2 = std::chrono::high_resolution_clock::now();
     diff = t2-t1;
   	pitm.pitTotalHitLat += diff.count();
-	pitm.nPitHits++;
+	pitm.nPitHits = pitm.nPitHits + 1;
     return {*it, false};
   }
 
