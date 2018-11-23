@@ -46,7 +46,7 @@ namespace cs {
 					<< "         Avg. Processing Latency = " << apl/1000 << " mS\n"
 					<< "	   Total Interests Satisfied = " << nm.nSatisfiedInterests << "\n"
 					<< "	              Avg. Hop Count = " << ((nm.nInData!=0) ? (float(nm.intHopsTag)/float(nm.nInData)):0) <<"\n"
-					<< "            Host Processing Time = " << (nm.hostProcessingTime/nm.nOutInterests)*1000 << " mS\n";
+					<< "            Host Processing Time = " << (nm.hostProcessingTime/nm.nOutInterests)<< " uS\n";
 				
 				ofs	<< "\n					Device_Metrics:\n"
 					<< "   	 	     nInInterest Packets = " << nm.nInInterests << "\n"
