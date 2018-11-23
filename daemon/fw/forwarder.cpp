@@ -344,7 +344,7 @@ Forwarder::onOutgoingInterest(const shared_ptr<pit::Entry>& pitEntry, Face& outF
 	  nm.nOutInterests++;
   	}*/
 	auto interestInPit = pitEntry->getInterest();
-	intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();			
+	auto intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();			
 	auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
 	nm.hostProcessingTime += (timeNow - *intArrivalTimeTag);
 	nm.nOutInterests++;
