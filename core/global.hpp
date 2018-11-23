@@ -50,6 +50,7 @@ namespace cs {
 		uint64_t processLat;
 		uint64_t nSatisfiedInterests;
 		uint64_t intHopsTag;
+		uint64_t hostProcessingTime;
 		
 		uint64_t nInData;
 		uint64_t nOutData;

@@ -282,7 +282,7 @@ Forwarder::onContentStoreHit(const Face& inFace, const shared_ptr<pit::Entry>& p
 	auto intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();			
 	data.setTag(make_shared<lp::intProcessingTimeTag>(*intProcessingTimeTag + (timeNow - *intArrivalTimeTag) ));
 	auto processLat = data.getTag<lp::intProcessingTimeTag>();			
-	
+		
 	
   	// check if we are back to consumer
 	intHopsTag = interestInPit.getTag<lp::intHopsTag>();
@@ -343,6 +343,10 @@ Forwarder::onOutgoingInterest(const shared_ptr<pit::Entry>& pitEntry, Face& outF
 /*	if (interestName_2.find("nlsr") == std::string::npos){
 	  nm.nOutInterests++;
   	}*/
+	auto interestInPit = pitEntry->getInterest();
+	intArrivalTimeTag = interestInPit.getTag<lp::intArrivalTimeTag>();			
+	auto timeNow = std::chrono::duration_cast<std::chrono::microseconds>((std::chrono::system_clock::now()).time_since_epoch()).count();
+	nm.hostProcessingTime += (timeNow - *intArrivalTimeTag);
 	nm.nOutInterests++;
 }
 

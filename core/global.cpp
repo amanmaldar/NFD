@@ -9,8 +9,8 @@ namespace cs {
 		
 		//const char *path="/home/lenovo/Dropbox/Thesis/Logs/minindn3/status_2.txt";
 		//const char *path_prefix_len="/home/lenovo/Dropbox/Thesis/Logs/minindn3/5000.txt";
-		const char *path="/home/amaldar/Logs/status_2.txt";
-		const char *path_prefix_len="/home/amaldar/Logs/5000.txt";
+		const char *path="/home/amaldar/Logs/machine_results.txt";
+		//const char *path_prefix_len="/home/amaldar/Logs/5000.txt";
 		std::ofstream ofs;
 
 		void sayHello(){
@@ -45,7 +45,8 @@ namespace cs {
 					//<< "    	 Total_ProcessLat_OnPath = " << nm.processLat/1000 <<" mS\n"
 					<< "         Avg. Processing Latency = " << apl/1000 << " mS\n"
 					<< "	   Total Interests Satisfied = " << nm.nSatisfiedInterests << "\n"
-					<< "	              Avg. Hop Count = " << ((nm.nInData!=0) ? (float(nm.intHopsTag)/float(nm.nInData)):0) <<"\n";
+					<< "	              Avg. Hop Count = " << ((nm.nInData!=0) ? (float(nm.intHopsTag)/float(nm.nInData)):0) <<"\n"
+					<< "            Host Processing Time = " << (nm.hostProcessingTime/nm.nOutInterests)*1000 << " mS\n";
 				
 				ofs	<< "\n					Device_Metrics:\n"
 					<< "   	 	     nInInterest Packets = " << nm.nInInterests << "\n"
@@ -77,6 +78,7 @@ namespace cs {
 			nm.nOutInterests = 0;
 			nm.dataSize = 0;
 			nm.intSize = 0;
+			nm.hostProcessingTime = 0;
 			
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\nNetwork_Metrics Reset\n";
@@ -88,8 +90,8 @@ namespace cs {
 		}
 		
 		void perfMeasure::printCsMetrics(csMetrics csm){
-		auto avgCsHitLat = ((csm.nCsMiss!=0) ? csm.csTotalMissLat/csm.nCsMiss:0)*1000000;
-		auto avgCsMissLat = ((csm.nCsHits!=0) ? csm.csTotalHitLat/csm.nCsHits:0)*1000000;
+		auto avgCsMissLat = ((csm.nCsMiss!=0) ? csm.csTotalMissLat/csm.nCsMiss:0)*1000000;
+		auto avgCsHitLat = ((csm.nCsHits!=0) ? csm.csTotalHitLat/csm.nCsHits:0)*1000000;
 		auto avgCsLookup = ((avgCsHitLat+avgCsMissLat)!=0) ? (csm.csTotalMissLat+csm.csTotalHitLat)/(csm.nCsHits+csm.nCsMiss):0;
 				ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\n				CS_Metrics:\n"
@@ -98,13 +100,14 @@ namespace cs {
 					<< "    				   nCS Miss = " << csm.nCsMiss <<"\n"
 					<< "    			    CS Hit Rate = " << 100*(csm.nCsHits/(csm.nCsHits+csm.nCsMiss)) <<" %\n"	
 					//<< "       Total_csLookUp_Miss_Time = " << csm.csTotalMissLat * 1000000 <<" uS\n"
-					<< "           Avg. CS Miss Latency = " <<  avgCsHitLat <<" uS\n"
+					<< "           Avg. CS Miss Latency = " <<  avgCsMissLat <<" uS\n"
 					//<< "        Total_csLookUp_Hit_Time = " << csm.csTotalHitLat * 1000000 <<" uS\n"
-					<< "            Avg. CS Hit Latency = " << avgCsMissLat <<" uS\n"	
+					<< "            Avg. CS Hit Latency = " << avgCsHitLat <<" uS\n"	
 					<< "         Avg. CS Lookup Latency = " << avgCsLookup * 1000000 <<" uS\n";	
 				ofs.close();
 				
 			// Print Packet Distribution
+			/*
 			ofs.open (path_prefix_len, std::fstream::in | std::fstream::out | std::fstream::app);
 			ofs << "printing 5000 \n";
 			for (auto i=csm.myvector.begin();i!=csm.myvector.end();i++){
@@ -118,6 +121,7 @@ namespace cs {
 				} 	
 			}	
 			ofs.close();
+			*/
 		}
 		
 		csMetrics perfMeasure::clearCsMetrics(csMetrics &csm){
