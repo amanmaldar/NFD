@@ -98,10 +98,12 @@ Pit::findOrInsert(const Interest& interest, bool allowInsert)
   
       return entry->canMatch(interest, nteDepth);
     });
+   // pit lookup timer ends
+  t2 = std::chrono::high_resolution_clock::now();
   if (it != pitEntries.end()) {
   
     // PIT hit scenario. Return the match result
-   	t2 = std::chrono::high_resolution_clock::now();
+   	//t2 = std::chrono::high_resolution_clock::now();
     diff = t2-t1;
   	pitm.pitTotalHitLat += diff.count();
 	pitm.nPitHits = pitm.nPitHits + 1;
@@ -119,7 +121,7 @@ Pit::findOrInsert(const Interest& interest, bool allowInsert)
   ++m_nItems;
   // PIT miss scenario
   if (interestName_1.find("nlsr") == std::string::npos){
-	  t2 = std::chrono::high_resolution_clock::now();
+	  //t2 = std::chrono::high_resolution_clock::now();
 	  diff = t2-t1;
 	  pitm.pitTotalMissLat += diff.count();
 	  pitm.nPitMiss++;
