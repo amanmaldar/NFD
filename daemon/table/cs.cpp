@@ -168,18 +168,19 @@ Cs::find(const Interest& interest,
 	
 	// int interestNameLength = interest.getName().size();
 	// csm.prefixLenDist[interestNameLength]+=1;
+	t2 = std::chrono::high_resolution_clock::now();		// cs lookup ends here
 	 if (match == last) {
-		
+		//t2 = std::chrono::high_resolution_clock::now();		// Stop timer = t2 = end CS search - Result Not Found
 		
 		NFD_LOG_DEBUG("onContentStoreMiss interest=" << interest.getName() << "onContentStoreMissDiff=" << diff.count());
 		
 		// ignore nlsr packets
 		if (interestName.find("nlsr") == std::string::npos){
-			t2 = std::chrono::high_resolution_clock::now();		// Stop timer = t2 = end CS search - Result Not Found
+			
 			diff = t2-t1;
 			csm.nCsMiss++;
 			csm.csTotalMissLat += diff.count();
-			csm.myvector.push_back(diff.count());
+			// csm.myvector.push_back(diff.count());
 		}
 
 		// Read the interest name. It is used everywhere.
@@ -210,7 +211,7 @@ Cs::find(const Interest& interest,
   } // searching ends here . Timer should end here 
 
 	// continue only for hit scenario
-	t2 = std::chrono::high_resolution_clock::now();
+	//t2 = std::chrono::high_resolution_clock::now();
 	diff = t2-t1;
 	NFD_LOG_DEBUG("onContentStoreHit interest=" << interest.getName() << "onContentStoreHitDiff=" << diff.count());
 

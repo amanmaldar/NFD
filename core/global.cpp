@@ -13,12 +13,6 @@ namespace cs {
 		//const char *path_prefix_len="/home/amaldar/Logs/5000.txt";
 		std::ofstream ofs;
 
-		void sayHello(){
-		return;
-			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
-				ofs << "	hello world" << "\n";
-			ofs.close();
-		}
 
 		void perfMeasure::printNwMetrics(networkMetrics nm){
 			
@@ -32,8 +26,7 @@ namespace cs {
 				apl = nm.processLat/nm.nInData ;
 			}
 			
-			 //std::time_t now = std::time(0);
-			 //char* dt = ctime(&now);
+
    
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\n------------------ Network_Metrics:------------------------\n"
@@ -55,15 +48,15 @@ namespace cs {
 					<< "   	 	     	nOutData Packets = " << nm.nOutData << "\n";
 				
 				ofs	<< "\n					Throughput:\n"
-					<< "   	 	     			intSize = " << nm.intSize << "\n"
-					<< "   	 	     			dataSize = " << nm.dataSize << "\n";
+					<< "   	 	     			 intSize = " << nm.intSize << " Bytes \n"
+					<< "   	 	     			dataSize = " << nm.dataSize << " Bytes \n";
 					
 			ofs.close();
 			
 			
 		
 		}
-		// std::setprecision(2)
+		
 		
 		networkMetrics perfMeasure::clearNwMetrics(networkMetrics &nm){
 			nm.responseTime = 0;
@@ -129,7 +122,7 @@ namespace cs {
 			csm.nCsMiss = 0;
 			csm.csTotalMissLat= 0;
 			csm.csTotalHitLat = 0;
-			csm.myvector.clear();
+			// csm.myvector.clear(); // used to measure latencies for 5000 packets
 			csm.prefixLenDist.clear();
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "CS_Metrics Reset\n";
@@ -170,7 +163,7 @@ namespace cs {
 			ofs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
 				ofs	<< "\n				FIB_Metrics:\n"
 					<< 							fixed
-					<< "    				  nFIB Hits = " << fibm.nFibHits <<"\n"	
+					<< "        nFIB Hits (nOutInterests) = " << fibm.nFibHits <<"\n"	
 					//<< "       Total_fibLookUp_Hit_Time = " << fibm.fibTotalHitLat * 1000000 <<" uS\n"
 					<< "             Forwarding Latency = " << ((fibm.nFibHits!=0) ? fibm.fibTotalHitLat/fibm.nFibHits:0)*1000000 <<" uS\n";
 
